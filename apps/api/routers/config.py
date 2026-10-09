@@ -13,7 +13,9 @@ async def get_config(
 ) -> ConfigResponse:
     return ConfigResponse(
         provider=settings.LLM_PROVIDER.value,
-        model=settings.OLLAMA_MODEL,
+        model=settings.selected_model(),
         embed_model=settings.OLLAMA_EMBED_MODEL,
         max_cosine_distance=settings.MAX_COSINE_DISTANCE,
+        available_providers=["ollama"]
+        + (["anthropic"] if settings.ANTHROPIC_API_KEY and settings.ANTHROPIC_MODEL else []),
     )

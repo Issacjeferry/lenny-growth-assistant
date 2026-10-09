@@ -2,6 +2,9 @@ from typing import Any, Optional
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException
+
+from packages.shared.models import ErrorResponse
 
 
 class AppError(Exception):
@@ -44,15 +47,33 @@ class InternalError(AppError):
 
 
 async def app_error_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    request_id = getattr(request.state, "request_id", None)
-    error_code = getattr(exc, "error_code", "INTERNAL_ERROR")
-    message = getattr(exc, "message", str(exc))
-    status_code = getattr(exc, "status_code", 500)
+    if isinstance(exc, AppError):
+        return error_response(request, exc.status_code, exc.error_code, exc.message)
+    return error_response(request, 500, "INTERNAL_ERROR", "An unexpected error occurred")
+
+
+def error_response(request: Request, status_code: int, code: str, message: str) -> JSONResponse:
+    payload = ErrorResponse(
+        error_code=code,
+        message=message,
+        request_id=getattr(request.state, "request_id", None),
+    )
     return JSONResponse(
         status_code=status_code,
-        content={
-            "error_code": error_code,
-            "message": message,
-            "request_id": request_id,
-        },
+        content=payload.model_dump(),
     )
+
+
+async def validation_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    # Do not echo submitted values: validation failures can contain credentials or prompts.
+    return error_response(request, 422, "VALIDATION_ERROR", "Request validation failed")
+
+
+async def http_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    if not isinstance(exc, HTTPException):
+        return await app_error_exception_handler(request, exc)
+    code = "NOT_FOUND" if exc.status_code == 404 else "HTTP_ERROR"
+    response = error_response(request, exc.status_code, code, "Request could not be completed")
+    if exc.headers:
+        response.headers.update(exc.headers)
+    return response

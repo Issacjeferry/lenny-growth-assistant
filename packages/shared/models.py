@@ -20,6 +20,8 @@ class ConfigResponse(BaseModel):
     model: str
     embed_model: str
     max_cosine_distance: float
+    available_providers: list[str] = []
+    agent_runtime: str = "Pi Coding Agent"
 
 
 class ErrorResponse(BaseModel):

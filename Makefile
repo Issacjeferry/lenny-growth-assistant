@@ -4,7 +4,7 @@ dev:
 	docker compose up db api
 
 test:
-	pytest tests/ -v
+	python -m pytest tests/ -v
 
 lint:
 	ruff check . && mypy apps packages
@@ -19,10 +19,11 @@ logs:
 	docker compose logs -f api
 
 ingest:
-	@echo "not implemented yet"
+	python -m packages.retrieval.ingest
 
 eval:
-	@echo "not implemented yet"
+	@echo "Corpus benchmark is not yet implemented. See docs/assessment-review.md."
+	@exit 1
 
 reindex:
-	@echo "not implemented yet"
+	@echo "Run make ingest after source changes; unchanged episodes are skipped."

@@ -9,6 +9,7 @@ from alembic import context
 # Ensure workspace root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+from packages.shared import db_models  # noqa: E402, F401
 from packages.shared.config import get_settings  # noqa: E402
 from packages.shared.db import Base  # noqa: E402
 

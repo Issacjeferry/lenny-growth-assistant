@@ -17,7 +17,9 @@ def test_health_all_ok():
 
     try:
         with patch("httpx.AsyncClient.get", new_callable=AsyncMock) as mock_get:
-            mock_get.return_value = httpx.Response(200, json={"models": []})
+            mock_get.return_value = httpx.Response(
+                200, json={"models": [{"name": "llama3.1:8b"}, {"name": "nomic-embed-text:latest"}]}
+            )
             response = client.get("/health")
             assert response.status_code == 200
             data = response.json()
@@ -26,6 +28,20 @@ def test_health_all_ok():
             assert data["ollama"] == "ok"
             assert data["provider"] == "ollama"
             assert data["model"] == "llama3.1:8b"
+    finally:
+        app.dependency_overrides.clear()
+
+
+def test_health_reports_missing_generation_model():
+    app.dependency_overrides[get_db] = lambda: MagicMock()
+    try:
+        with patch("httpx.AsyncClient.get", new_callable=AsyncMock) as mock_get:
+            mock_get.return_value = httpx.Response(
+                200, json={"models": [{"name": "nomic-embed-text:latest"}]}
+            )
+            response = client.get("/health")
+            assert response.json()["status"] == "degraded"
+            assert response.json()["ollama"] == "missing_models"
     finally:
         app.dependency_overrides.clear()
 

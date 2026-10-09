@@ -23,6 +23,8 @@ dependencies = [
     "pytest-asyncio>=0.24.0",
     "ruff>=0.7.0",
     "mypy>=1.13.0",
+    "PyYAML>=6.0.2",
+    "nh3==0.3.7",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -46,3 +48,4 @@ check_untyped_defs = true
 asyncio_mode = "auto"
 testpaths = ["tests"]
 pythonpath = [".", "apps", "packages"]
+addopts = "--basetemp=tmp"

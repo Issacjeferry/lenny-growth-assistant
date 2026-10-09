@@ -30,6 +30,11 @@ async def check_health(
             res = await client.get(f"{settings.OLLAMA_BASE_URL.rstrip('/')}/api/tags")
             if res.status_code != 200:
                 ollama_status = "down"
+            else:
+                names = {m["name"] for m in res.json().get("models", [])}
+                required = {settings.OLLAMA_MODEL, settings.OLLAMA_EMBED_MODEL}
+                if any(name not in names and name + ":latest" not in names for name in required):
+                    ollama_status = "missing_models"
     except Exception:
         ollama_status = "down"
 
@@ -37,7 +42,7 @@ async def check_health(
     if db_status == "down":
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
         overall_status = "unhealthy"
-    elif ollama_status == "down":
+    elif ollama_status != "ok":
         response.status_code = status.HTTP_200_OK
         overall_status = "degraded"
     else:
@@ -49,5 +54,5 @@ async def check_health(
         database=db_status,
         ollama=ollama_status,
         provider=settings.LLM_PROVIDER.value,
-        model=settings.OLLAMA_MODEL,
+        model=settings.selected_model(),
     )

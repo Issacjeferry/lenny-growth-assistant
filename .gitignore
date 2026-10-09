@@ -1,6 +1,12 @@
 # Environment files
 .env
 .env.local
+.env.*
+!.env.example
+
+# Local inspection artifacts and frontend dependencies
+tmp/
+node_modules/
 
 # Python
 __pycache__/
