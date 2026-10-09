@@ -108,7 +108,7 @@ The interface uses a split-screen workspace topology organized into three distin
 
 ### Model Badge & Popover
 - **Default State:** Small bottom-sidebar chip with status dot:
-  - 🟢 Green: Provider active & responsive (e.g., `Ollama (llama3.1:8b)`).
+  - 🟢 Green: Provider active & responsive (e.g., `Ollama · llama3.1:8b`).
   - 🟡 Amber: Running on cloud fallback provider.
   - 🔴 Red: Provider disconnected or offline.
 - **Click State:** Opens a compact popover detailing:
