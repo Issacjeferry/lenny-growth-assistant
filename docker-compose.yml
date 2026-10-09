@@ -30,9 +30,29 @@ services:
       - .env
     environment:
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL_DOCKER:-http://host.docker.internal:11434}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - .:/app
     command: uvicorn apps.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  ingest:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    profiles: ["tools"]
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL_DOCKER:-http://host.docker.internal:11434}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - .:/app
+    command: python -m packages.retrieval.indexer
 
 volumes:
   pgdata:

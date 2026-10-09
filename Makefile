@@ -19,11 +19,10 @@ logs:
 	docker compose logs -f api
 
 ingest:
-	python -m packages.retrieval.ingest
+	docker compose run --rm ingest
 
 eval:
-	@echo "Corpus benchmark is not yet implemented. See docs/assessment-review.md."
-	@exit 1
+	python tests/eval/test_benchmark.py
 
 reindex:
 	@echo "Run make ingest after source changes; unchanged episodes are skipped."
