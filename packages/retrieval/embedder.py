@@ -16,7 +16,7 @@ async def embed_batch(texts: list[str], settings: Settings, query: bool = False)
     
     async with semaphore:
         try:
-            async with httpx.AsyncClient(timeout=120) as client:
+            async with httpx.AsyncClient(timeout=300) as client:
                 response = await client.post(
                     f"{settings.OLLAMA_BASE_URL.rstrip('/')}/api/embed",
                     json={
