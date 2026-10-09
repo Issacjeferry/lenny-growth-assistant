@@ -26,13 +26,13 @@ class Evidence(BaseModel):
 async def embed(texts: list[str], settings: Settings, query: bool = False) -> list[list[float]]:
     prefix = "search_query: " if query else "search_document: "
     try:
-        async with httpx.AsyncClient(timeout=120) as client:
+        async with httpx.AsyncClient(timeout=300) as client:
             response = await client.post(
                 f"{settings.OLLAMA_BASE_URL.rstrip('/')}/api/embed",
                 json={
                     "model": settings.OLLAMA_EMBED_MODEL,
                     "input": [prefix + text for text in texts],
-                    "truncate": False,
+                    "truncate": True,
                 },
             )
             response.raise_for_status()
