@@ -21,6 +21,11 @@
 - Cloud API keys are optional.
 - No authentication is required for this engagement.
 
+## Dependencies
+
+- Ship 30 for 30 guide must be read and its writing principles encoded in `.agents/skills/ship30/SKILL.md` before Phase 3 begins.
+- Lenny's Podcast transcripts must be downloaded into `data/raw/` before ingestion can run.
+
 ## Scope
 
 ### Included
@@ -64,7 +69,7 @@
 1. User asks the assistant to create an artifact (e.g., an HTML onboarding checklist, metric calculator, or Markdown framework).
 2. Agent outputs an artifact payload specifying title, type (`html` or `markdown`), and raw content.
 3. UI detects the artifact payload and opens the side-by-side Artifact Viewer pane.
-4. Markdown renders natively; HTML is sanitized via DOMPurify and rendered inside a sandboxed `<iframe>` with `sandbox="allow-scripts"` and strictly no `allow-same-origin`.
+4. Markdown renders natively; HTML is sanitized server-side, then rendered inside a sandboxed `<iframe>` with `sandbox=""` (no scripts, no same-origin).
 
 ### 4. Unsupported Question → Refusal with Explanation
 1. User submits an out-of-domain query or a question not covered by the transcripts.
@@ -78,12 +83,14 @@
 2. **Session Persistence:** All sessions, messages, and timestamps are persisted to PostgreSQL and reliably reloaded upon page refresh or session switching.
 3. **Grounding & Citations:** Every supported answer provides at least one citation containing episode title and source URL referencing the transcript knowledge base.
 4. **Refusal Behavior:** The system explicitly refuses to answer and outputs zero citations when retrieval yields no relevant chunks above the threshold.
-5. **Model Toggle & Fallback:** The user can toggle between local Ollama (`llama3.1:8b`) and cloud LLM (Claude/OpenAI) in configuration/UI, and the system automatically falls back to local Ollama if the cloud provider is unavailable.
+5. **Model Toggle & Fallback:** The default provider is Ollama. If Ollama is unavailable and a cloud API key is configured, the system falls back to the cloud provider. If Ollama is unavailable and no cloud key is configured, the system returns a structured error and does not crash. The active provider is visible in the UI and via GET /config.
 6. **Ship 30 Skill Execution:** The Ship 30 skill generates a ~1,250-word structured essay with a hook, subheadings, bullet points, and specific actionable takeaways grounded in transcript evidence.
-7. **Artifact Viewer Isolation:** All HTML artifacts render inside a sandboxed `<iframe>` with `sandbox="allow-scripts"` and no `allow-same-origin`, blocking access to parent DOM, cookies, and local storage.
+7. **Artifact Viewer Isolation:** All HTML artifacts render inside an `<iframe>` with `sandbox=""` (no scripts, no same-origin, no top navigation, no forms, no external network). Scripts are blocked by default. CSS rendering is permitted. The viewer permits: HTML structure, CSS styling, inline data-URI images. The viewer blocks: JavaScript, external network requests, forms, top-level navigation, and access to parent DOM, cookies, and local storage. The full permitted/blocked list is documented in `docs/security.md`.
 8. **Structured Logging:** All backend requests and model calls emit JSON logs containing `request_id`, `session_id`, `model`, `latency_ms`, and `error_code`.
 9. **One-Command Setup:** Running `docker compose up` starts PostgreSQL (pgvector), Ollama, FastAPI backend, and React frontend in under 10 minutes on a clean machine.
 10. **Evaluation Benchmark:** Executing `make eval` runs a 25-question golden benchmark achieving >= 80% citation coverage and 100% refusal on unsupported queries.
+11. **Health & Config:** GET /health returns status of database and Ollama connectivity. GET /config returns the active provider name and model name.
+12. **Security Documentation:** `docs/security.md` documents exactly what the artifact viewer permits, what it blocks, and why, with examples of blocked XSS payloads.
 
 ## Risks and Trade-offs
 
@@ -104,7 +111,7 @@
   - *Mitigation:* Safe `.env.example` defaults, strict git-ignore policies, stateless API request lifecycle, and session-partitioned database queries.
 - **Unsafe Artifact Rendering**
   - *Risk:* Malicious or malformed HTML/JS artifacts performing Cross-Site Scripting (XSS) or stealing parent session context.
-  - *Mitigation:* Client-side DOMPurify sanitization and rendering inside an `<iframe>` configured with `sandbox="allow-scripts"` and strictly no `allow-same-origin`.
+  - *Mitigation:* Server-side sanitization followed by rendering inside an `<iframe>` with `sandbox=""` (no scripts, no same-origin). Documented in `docs/security.md`.
 
 ## Implementation Plan
 
