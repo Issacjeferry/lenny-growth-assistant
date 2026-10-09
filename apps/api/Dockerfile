@@ -6,11 +6,6 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH=/app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
 COPY pyproject.toml README.md ./
 
 RUN pip install --no-cache-dir --upgrade pip && \
