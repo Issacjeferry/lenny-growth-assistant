@@ -6,6 +6,8 @@
 
 # Local inspection artifacts and frontend dependencies
 tmp/
+scratch/
+*.tsbuildinfo
 node_modules/
 
 # Python

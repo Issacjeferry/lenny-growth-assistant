@@ -17,7 +17,8 @@ try {
     [request.provider]: {
       baseUrl: local ? request.baseUrl : 'https://api.anthropic.com',
       api: local ? 'openai-completions' : 'anthropic-messages',
-      models: [{id: request.model, contextWindow: local ? 8192 : 200000, maxTokens: 2800}],
+      models: [{id: request.model, contextWindow: local ? 4096 : 200000,
+        maxTokens: request.maxTokens || 900, samplingParams: {temperature: 0.2}}],
     },
   }}));
   const runtime = await ModelRuntime.create({
@@ -39,12 +40,13 @@ try {
   };
   ({session} = await createAgentSession({
     cwd: directory, agentDir: directory, model, modelRuntime: runtime,
-    thinkingLevel: 'off', noTools: true, resourceLoader,
+    thinkingLevel: 'off', noTools: 'all', tools: [], resourceLoader,
     sessionManager: SessionManager.inMemory(directory),
     settingsManager: SettingsManager.inMemory({
       compaction: {enabled: false}, retry: {enabled: false},
     }),
   }));
+  if (session.getActiveToolNames().length) throw new Error('Unexpected active tools');
   await session.prompt(request.prompt);
   const last = session.messages.at(-1);
   if (last?.stopReason === 'error' || last?.stopReason === 'aborted') throw new Error('Model failed');

@@ -128,9 +128,22 @@ async def send_message(
 @router.get("/library", response_model=LibraryStatus)
 def library(db: Session = Depends(get_db), settings: Settings = Depends(get_settings_dep)):
     return LibraryStatus(
-        episodes=db.scalar(select(func.count()).select_from(Episode)) or 0,
-        chunks=db.scalar(select(func.count()).select_from(Chunk)) or 0,
+        episodes=db.scalar(
+            select(func.count()).select_from(Episode).where(Episode.source_valid.is_(True))
+        )
+        or 0,
+        chunks=db.scalar(
+            select(func.count())
+            .select_from(Chunk)
+            .join(Episode)
+            .where(Episode.source_valid.is_(True))
+        )
+        or 0,
         embedding_model=settings.OLLAMA_EMBED_MODEL,
+        quarantined_episodes=db.scalar(
+            select(func.count()).select_from(Episode).where(Episode.source_valid.is_(False))
+        )
+        or 0,
     )
 
 

@@ -13,6 +13,7 @@ class Payload(BaseModel):
 
 def error_client():
     app = create_app()
+    app.router.routes[:] = [r for r in app.router.routes if getattr(r, "name", "") != "frontend"]
 
     @app.post("/test/validate")
     def validate(payload: Payload) -> Payload:

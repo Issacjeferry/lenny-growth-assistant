@@ -63,3 +63,18 @@ async def test_embedding_dimension_mismatch_is_rejected(monkeypatch):
     monkeypatch.setattr(httpx.AsyncClient, "post", AsyncMock(return_value=response))
     with pytest.raises(ProviderUnavailableError):
         await embed(["retention"], Settings(_env_file=None))
+
+
+def test_parser_reads_minute_second_timestamps(tmp_path):
+    record = parse_transcript(transcript_file(tmp_path, "Guest (12:34):\nUseful evidence."))
+    assert record.passages[0].timestamp == 754
+
+
+def test_parser_quarantines_conflicting_named_guest(tmp_path):
+    path = transcript_file(tmp_path)
+    path.write_text(
+        path.read_text().replace("Synthetic test episode", "Product advice | Bob Baxley"),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Guest conflicts"):
+        parse_transcript(path)

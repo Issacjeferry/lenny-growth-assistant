@@ -10,7 +10,9 @@ from packages.shared.errors import ProviderUnavailableError
 ROOT = Path(__file__).resolve().parents[2]
 
 
-async def generate(system: str, prompt: str, provider: str, settings: Settings) -> str:
+async def generate(
+    system: str, prompt: str, provider: str, settings: Settings, max_tokens: int = 900
+) -> str:
     if provider not in ("ollama", "anthropic"):
         raise ProviderUnavailableError(
             "This provider is not integrated.", "PROVIDER_NOT_CONFIGURED"
@@ -29,6 +31,7 @@ async def generate(system: str, prompt: str, provider: str, settings: Settings) 
             "model": model,
             "baseUrl": settings.OLLAMA_BASE_URL.rstrip("/") + "/v1",
             "apiKey": settings.ANTHROPIC_API_KEY if provider == "anthropic" else "ollama",
+            "maxTokens": max_tokens,
         }
     ).encode()
     try:

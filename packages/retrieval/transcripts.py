@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 
 import yaml
 
-TIMESTAMP = re.compile(r"\((\d{1,2}):(\d{2}):(\d{2})\)")
+TIMESTAMP = re.compile(r"\((?:(\d{1,2}):)?(\d{1,2}):(\d{2})\)")
 
 
 @dataclass
@@ -46,10 +46,18 @@ def parse_transcript(path: Path, max_chars: int = 2400, overlap: int = 300) -> T
         raise ValueError("Title, guest and HTTPS source URL are required")
     if parsed.username or parsed.password:
         raise ValueError("Source URLs must not contain credentials")
+    # A named guest in the title must agree with frontmatter. Conflicting source
+    # metadata cannot safely produce a title/URL citation. Leave the raw file intact.
+    named_guest = re.search(r"\|\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,3})(?:\s*\(|$)", title)
+    if named_guest:
+        title_names = set(re.findall(r"[a-z]+", named_guest.group(1).lower()))
+        guest_names = set(re.findall(r"[a-z]+", guest.lower()))
+        if not title_names.intersection(guest_names):
+            raise ValueError("Guest conflicts with the named guest in the episode title")
     start = match.end()
     passages = []
     stamps = [
-        (m.start(), sum(int(n) * factor for n, factor in zip(m.groups(), (3600, 60, 1))))
+        (m.start(), sum(int(n or 0) * factor for n, factor in zip(m.groups(), (3600, 60, 1))))
         for m in TIMESTAMP.finditer(raw)
     ]
     while start < len(raw):

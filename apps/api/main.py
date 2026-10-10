@@ -1,12 +1,14 @@
 import time
 import uuid
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Callable
 
 import structlog
 from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import SQLAlchemyError
 from starlette.exceptions import HTTPException
 
@@ -110,6 +112,10 @@ def create_app() -> FastAPI:
     app.include_router(health_router)
     app.include_router(config_router)
     app.include_router(sessions_router)
+
+    frontend = Path(__file__).resolve().parents[1] / "web" / "dist"
+    if frontend.is_dir():
+        app.mount("/", StaticFiles(directory=frontend, html=True), name="frontend")
 
     return app
 

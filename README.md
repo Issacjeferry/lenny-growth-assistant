@@ -1,114 +1,102 @@
 # Lenny Growth Assistant
 
-A local-first workspace for turning Lenny's Podcast transcripts into answers, essays,
-and reusable briefs, with the underlying evidence visible beside the conversation.
+A local-first workspace that turns Lenny's Podcast transcripts into cited answers, Ship 30
+essays, and reusable Markdown/HTML briefs. Inspect the underlying passages beside the chat.
 
-**Status: implementation checkpoint, not submission-ready.** The database migration and
-backend tests have local verification. The real Pi/Ollama generation path, corpus retrieval,
-frontend build/browser behavior, cloud calls, and fresh-machine setup still need validation.
-GitHub/npm downloads were blocked on the development network. See
-[the assessment review](docs/assessment-review.md) for the remaining acceptance gates.
+React/Vite/TypeScript → FastAPI → PostgreSQL/pgvector, with a real Pi Coding Agent session
+using Ollama or explicitly selected Anthropic. HTML is sanitized and sandboxed.
 
-## Architecture
+**Verification is in progress.** Backend tests and frontend tests/build pass. The live model
+smoke test exposed a supported-question refusal and slow CPU inference. The fresh Docker
+build failed during npm installation. These are open acceptance gates, not successful checks.
+See [assessment review](docs/assessment-review.md), [runbook](docs/runbook.md) and `reports/`.
 
-React + Vite + TypeScript → FastAPI → PostgreSQL 16 / pgvector.
-Ollama `nomic-embed-text` embeds queries and passages. Semantic retrieval gates relevance;
-PostgreSQL full-text search and reciprocal rank fusion reorder eligible passages.
-FastAPI supplies bounded session history and retrieved evidence to a restricted Pi Coding
-Agent subprocess. Pi uses Ollama or explicitly configured Anthropic. There is no automatic
-local-to-cloud fallback. HTML passes through `nh3`, then a CSP document and sandboxed iframe.
+## Host setup (PowerShell)
 
-The current UI offers Q&A, a Ship 30 essay, an HTML brief, and a Markdown document.
-Responses are returned atomically after citation checks; token streaming is not implemented.
-
-## Prerequisites
-
-- Python 3.11+, Node 22.19+ (Node 24 is suitable), Docker Desktop and Ollama.
-- Network access to GitHub, npm, PyPI and the Ollama model registry for initial setup.
-- Enough memory for the selected model; benchmark on your own machine before claiming latency.
-
-## Finish setup on a network with downloads enabled (PowerShell)
-
-Run from the repository root. Keep an existing `.env`; copy the example only if absent.
+Prerequisites: Python 3.11+, Node 22.19+ (Node 24 works), Docker Desktop, Ollama, and network
+access to GitHub/npm/PyPI/model downloads. Keep an existing `.env`.
 
 ```powershell
 if (!(Test-Path .env)) { Copy-Item .env.example .env }
 python -m pip install -e .
-npm.cmd --prefix apps/agent install --ignore-scripts
-npm.cmd --prefix apps/web install
+npm.cmd --prefix apps/agent ci --ignore-scripts
+npm.cmd --prefix apps/web ci
 git clone --depth 1 https://github.com/ChatPRD/lennys-podcast-transcripts.git data/raw/lennys-podcast-transcripts
 ollama pull nomic-embed-text
-ollama pull llama3.1:8b
+ollama pull llama3.2:3b
 docker compose up -d db
 $env:DATABASE_URL = 'postgresql+psycopg://postgres:postgres@localhost:55432/lenny'
 $env:OLLAMA_BASE_URL = 'http://localhost:11434'
 python -m alembic upgrade head
 python -m packages.retrieval.ingest --limit 10
+python -m packages.retrieval.audit
 python -m uvicorn apps.api.main:app --host 127.0.0.1 --port 8000
 ```
 
-In a second terminal, run `npm.cmd --prefix apps/web run dev`, then open
-http://localhost:5173. The first ten episodes are a setup smoke test, not a representative
-evaluation corpus. Run ingestion without `--limit` to index everything. Re-running skips
-unchanged episodes. Keep the cloned source locally; raw transcripts are gitignored.
-Record the source commit with `git -C data/raw/lennys-podcast-transcripts rev-parse HEAD`.
+Skip cloning if sources already exist under `data/raw`. Record the corpus commit with
+`git -C data/raw/lennys-podcast-transcripts rev-parse HEAD` when using a clone. An extracted
+archive may lack commit metadata; disclose that instead of inventing a revision.
+Run ingestion without `--limit` to cover the full corpus; unchanged sources are skipped.
+Some upstream metadata conflicts are deliberately rejected. Run the audit after ingestion.
+Do not index and generate concurrently on a constrained CPU machine.
 
-If cloning already succeeded, do not clone again. If `ollama` is missing from PATH on Windows,
-its executable may be under `%LOCALAPPDATA%\Programs\Ollama\ollama.exe`.
+In a second terminal, run `npm.cmd --prefix apps/web run dev` and open
+[the workspace](http://localhost:5173). To serve the built UI from FastAPI instead, run
+`npm.cmd --prefix apps/web run build` before starting the API and open port 8000.
 
-**Container limitation:** `make dev` currently starts the database and Python API scaffold.
-The API Dockerfile does not yet bundle Node/Pi, and Compose does not yet start the frontend.
-Use the host development path above for generation until container packaging is completed.
-Do not describe the current Compose stack as a complete one-command deployment.
+## Container path
+
+`make dev` builds the frontend and Python/Node API image, then starts API and PostgreSQL.
+Ollama remains on the host. The intended UI URL is http://localhost:8000.
+`make ingest` runs the separate ingestion service against mounted `data/raw`.
+This path is implemented but a clean build remains unverified because npm installation failed
+on the development network. Use the host setup above while that blocker remains.
+`docker-compose.dev.yml` is an optional source-mount override, not required for production.
 
 ## Configuration
 
 | Variable | Purpose |
 |---|---|
-| `DATABASE_URL` | Compose: `db:5432`; host Python: `localhost:55432` |
-| `OLLAMA_BASE_URL` | Host Python connection, normally `http://localhost:11434` |
-| `OLLAMA_BASE_URL_DOCKER` | Container connection, normally `http://host.docker.internal:11434` |
-| `OLLAMA_MODEL` | Local generation model, default `llama3.1:8b` |
-| `OLLAMA_EMBED_MODEL` | Embedding model, fixed 768-dimensional schema |
-| `LLM_PROVIDER` | Default provider: `ollama` or `anthropic` |
-| `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` | Both required to enable the cloud choice |
-| `MODEL_TIMEOUT_SECONDS` | Generation timeout, default 300 seconds |
-| `MAX_COSINE_DISTANCE` | Semantic cutoff, default 0.35; not yet calibrated |
-| `NODE_BINARY` | Node executable or absolute path, default `node` |
+| DATABASE_URL | Container: db:5432; host: localhost:55432 |
+| OLLAMA_BASE_URL | Host Python connection, normally http://localhost:11434 |
+| OLLAMA_BASE_URL_DOCKER | Container connection, normally http://host.docker.internal:11434 |
+| OLLAMA_MODEL | Default llama3.2:3b; llama3.1:8b remains an option |
+| OLLAMA_EMBED_MODEL | nomic-embed-text; schema requires 768 dimensions |
+| LLM_PROVIDER | ollama or anthropic |
+| ANTHROPIC_API_KEY / ANTHROPIC_MODEL | Both required to enable cloud selection |
+| MODEL_TIMEOUT_SECONDS | Default 900; set according to hardware |
+| MAX_COSINE_DISTANCE | Default 0.35, requires corpus-specific calibration |
+| NODE_BINARY | Node executable, default node |
 
-OpenAI variables are reserved and do not represent a working integration. The selected
-cloud model ID must be valid for your account. Store keys only in the ignored `.env`.
-Explicit cloud selection sends the question, recent conversation, and retrieved excerpts
-to Anthropic. Local provider failure returns a structured error; it does not change providers.
+Store keys in ignored `.env`. OpenAI settings are reserved, not integrated. Cloud selection
+sends the question, bounded recent history and retrieved excerpts to Anthropic. No silent
+fallback occurs. A credentialed cloud call has not been verified.
 
-## Commands and checks
+## Validation
 
 ```powershell
 make test
 make lint
-make ingest
-npm.cmd --prefix apps/web run build
 npm.cmd --prefix apps/web test
+npm.cmd --prefix apps/web run build
+make eval
 ```
 
-On Windows, add `C:\Program Files (x86)\GnuWin32\bin` to this terminal's PATH if needed.
-`python -m pytest tests/ -v` is the equivalent backend test command. Host ingestion requires
-the host `DATABASE_URL` and `OLLAMA_BASE_URL` overrides shown above.
-`make eval` deliberately exits unsuccessfully until the real corpus benchmark is built.
-Synthetic unit fixtures are not evidence of retrieval quality or model accuracy.
+Windows may require GnuWin32's bin directory on PATH for make. Equivalent backend commands
+are `python -m pytest tests/ -v` and `python -m ruff check .` / `python -m mypy apps packages`.
+`make eval` runs all 25 live Ollama cases and writes `reports/evaluation.json`; this can take
+considerable time on CPU. `make eval EVAL_ARGS="--limit 1 --output reports/smoke.json"` is a
+partial smoke run and exits nonzero deliberately. Review claims against passages manually.
 
-The HTTP endpoints are documented at http://localhost:8000/docs. Start with `/health`,
-`/config`, `/api/library`, and `/api/sessions`. The health endpoint distinguishes an absent
-Ollama server from missing local models. Conversations and artifacts persist in PostgreSQL.
+API docs: http://localhost:8000/docs. Health/config/library endpoints reveal readiness,
+model and eligible corpus size. Migrations run at container startup. Keep database volumes;
+do not delete them to troubleshoot connectivity.
 
 ## Handoff
 
-- [Assessment review and remaining gates](docs/assessment-review.md)
-- [Current architecture](docs/architecture.md) and [decisions](docs/decisions.md)
-- [Product requirements](docs/PRD.md) and [interface design](docs/design.md)
-- [Security boundaries](docs/security.md)
-- [Troubleshooting and manual checks](docs/runbook.md)
-- [Development log](agent-transcripts/2026-10-09.md)
+[PRD](docs/PRD.md) · [Architecture](docs/architecture.md) · [Design](docs/design.md) ·
+[Decisions](docs/decisions.md) · [Security](docs/security.md) · [Runbook](docs/runbook.md) ·
+[Development logs](agent-transcripts/2026-10-09.md)
 
-This is an unauthenticated local demonstration. It is not a multi-user deployment.
-Keep it on localhost. Authentication and authorization are required before shared hosting.
+This is a single-user localhost demo. Authentication is required before shared hosting.
+The assessment also requires a short camera-enabled demo video, recorded by the applicant.

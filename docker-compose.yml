@@ -27,14 +27,14 @@ services:
       db:
         condition: service_healthy
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/lenny
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL_DOCKER:-http://host.docker.internal:11434}
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    volumes:
-      - .:/app
-    command: uvicorn apps.api.main:app --host 0.0.0.0 --port 8000 --reload
+    command: sh -c "python -m alembic upgrade head && uvicorn apps.api.main:app --host 0.0.0.0 --port 8000"
 
   ingest:
     build:
@@ -45,13 +45,16 @@ services:
       db:
         condition: service_healthy
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/lenny
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL_DOCKER:-http://host.docker.internal:11434}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - .:/app
+      - ./data/raw:/app/data/raw:ro
+      - ./data/processed:/app/data/processed
     command: python -m packages.retrieval.indexer
 
 volumes:

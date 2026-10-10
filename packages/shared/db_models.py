@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime, timezone
 
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import JSON, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from packages.shared.db import Base
@@ -59,6 +59,7 @@ class Episode(Base):
     source_path: Mapped[str] = mapped_column(Text, unique=True)
     content_hash: Mapped[str] = mapped_column(String(64))
     index_version: Mapped[str] = mapped_column(String(160))
+    source_valid: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 

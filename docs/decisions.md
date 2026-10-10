@@ -1,27 +1,31 @@
-# Architecture Decisions
-
-- 
 # Architecture decisions
 
-## 2026-10-09: implementation checkpoint
+## 2026-10-09 — Runtime and boundaries
 
-1. **Pi Coding Agent is the proposed generation runtime.** The assessment requires Pi or
-   Claude Agent SDK. Use Pi's actual session API through a bounded Node subprocess, with
-   explicit resource loading and built-in tools disabled. FastAPI handles retrieval and
-   deterministic routing. This adds Node to backend packaging; npm installation and real
-   runtime verification remain blocked. A written bridge is not yet a verified integration.
-2. **No silent cloud fallback.** A configured key alone does not authorize the product to
-   change a local conversation's processing destination. UI/API provider selection is explicit.
-3. **Fail explicitly on embedding outage.** No relevant corpus evidence and unavailable
-   retrieval are distinct states. Keyword-only fallback is deferred until evaluated.
-4. **Validate before display.** Return a complete response after checking source IDs; no
-   token streaming at this checkpoint. This prevents provisional uncited output but increases
-   perceived latency. UI shows elapsed time. Streaming can be added with a provisional state.
-5. **Static artifacts.** Server-side nh3 allowlist, app-owned CSP and empty iframe sandbox.
-   No scripts, forms, images, external links or embeds inside HTML. Exported HTML retains CSP.
-6. **Traceable refresh.** Hash source content and chunk/embedding configuration. Replace one
-   episode transactionally; retain exact character offsets and available timestamps.
-7. **Port isolation.** Use 55432 on the host for this project's DB to avoid the installed
-   PostgreSQL listener on 5432. Container-to-container traffic remains db:5432.
-8. **Honest status.** Existing planning diagrams are design intent. Acceptance depends on
-   actual corpus/model/browser checks, not documentation or synthetic test counts.
+1. Use the real Pi Coding Agent session SDK through a bounded Node subprocess. FastAPI handles
+   retrieval and deterministic routing. Pi has no active tools, discovered project instructions,
+   extensions or persistent credential/session store. This satisfies the specified agent runtime
+   without giving transcript content shell access.
+2. No automatic cloud fallback. Provider selection is explicit; Anthropic receives source excerpts
+   and recent history only when selected. OpenAI settings do not imply a working integration.
+3. Embedding outages are structured service errors, distinct from no-evidence refusals.
+4. Validate source identities before displaying complete output. Atomic responses simplify safe
+   persistence but increase perceived latency; show elapsed time honestly.
+5. Sanitize HTML with nh3, inject application-owned CSP, and render in an empty sandbox iframe.
+6. Content/configuration hashes allow transactional episode replacement. Source offsets and
+   timestamps preserve traceability. Bind database port 55432 to avoid host PostgreSQL conflicts.
+
+## 2026-10-10 — Corpus and verification
+
+7. Keep one canonical indexed record per transcript path and quarantine detectable source metadata
+   conflicts. Do not guess corrected titles/URLs or delete raw corpus files. Audit eligibility is
+   separate from stored history, so existing citations remain inspectable.
+8. Use llama3.2:3b as the default CPU-friendly fallback from llama3.1:8b. The earlier 15–40-second
+   estimate was not an end-to-end measurement. A real supported-query smoke run took 294.95 seconds
+   and failed with a refusal; it is recorded as a failure, not a successful benchmark.
+9. Evaluation keeps HTTP/model failures in the denominator, verifies explicit refusal status,
+   checks artifact type and essay length, and never calls a partial run a full pass. Citation
+   presence alone cannot establish semantic accuracy.
+10. Production packaging builds React and bundles Node/Pi with FastAPI. A clean Docker build failed
+    during npm installation on this network. Host development remains the available fallback;
+    packaging must be verified on a network where dependency installation succeeds.

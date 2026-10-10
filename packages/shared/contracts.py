@@ -66,3 +66,4 @@ class LibraryStatus(BaseModel):
     episodes: int
     chunks: int
     embedding_model: str
+    quarantined_episodes: int = 0

@@ -83,3 +83,13 @@ def test_html_artifact_is_sanitized_before_persistence(client, monkeypatch):
     assert "<script" not in result["artifact"]["content"]
     persisted = api.get(f"/api/sessions/{session}").json()["artifacts"]
     assert persisted[0]["content"] == result["artifact"]["content"]
+
+
+def test_uncited_generation_is_an_error_not_a_no_evidence_refusal(client, monkeypatch):
+    api, _ = client
+    monkeypatch.setattr(service, "generate", AsyncMock(return_value="Uncited advice"))
+    session = api.post("/api/sessions", json={}).json()["id"]
+    result = api.post(f"/api/sessions/{session}/messages", json={"content": "Retention?"})
+    assert result.status_code == 502
+    assert result.json()["error_code"] == "GROUNDING_FAILED"
+    assert api.get(f"/api/sessions/{session}").json()["messages"] == []

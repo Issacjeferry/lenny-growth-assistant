@@ -48,4 +48,3 @@ check_untyped_defs = true
 asyncio_mode = "auto"
 testpaths = ["tests"]
 pythonpath = [".", "apps", "packages"]
-addopts = "--basetemp=tmp"

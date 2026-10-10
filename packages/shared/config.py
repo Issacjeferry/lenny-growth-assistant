@@ -22,13 +22,13 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+psycopg://postgres:postgres@db:5432/lenny"
     LLM_PROVIDER: LLMProviderType = LLMProviderType.OLLAMA
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "llama3.1:8b"
+    OLLAMA_MODEL: str = "llama3.2:3b"
     OLLAMA_EMBED_MODEL: str = "nomic-embed-text"
     ANTHROPIC_API_KEY: Optional[str] = None
     ANTHROPIC_MODEL: str = ""
     OPENAI_API_KEY: Optional[str] = None
     OPENAI_MODEL: str = ""
-    MODEL_TIMEOUT_SECONDS: int = Field(default=300, ge=1, le=900)
+    MODEL_TIMEOUT_SECONDS: int = Field(default=900, ge=1, le=900)
     NODE_BINARY: str = "node"
     LOG_LEVEL: str = "INFO"
     MAX_COSINE_DISTANCE: float = Field(default=0.35, ge=0, le=2)

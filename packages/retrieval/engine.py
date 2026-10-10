@@ -65,6 +65,7 @@ async def retrieve(query: str, db: Session, settings: Settings, limit: int = 5) 
     candidates = db.execute(
         select(Chunk, Episode, distance.label("distance"))
         .join(Episode, Chunk.episode_id == Episode.id)
+        .where(Episode.source_valid.is_(True))
         .order_by(distance)
         .limit(30)
     ).all()
@@ -85,8 +86,14 @@ async def retrieve(query: str, db: Session, settings: Settings, limit: int = 5) 
     )
     order = fuse(list(eligible), [key for key in keyword_ids if key in eligible])
     evidence = []
-    for key in order[:limit]:
+    seen_urls: dict[str, int] = {}
+    for key in order:
         chunk, episode, d = eligible[key]
+        # Avoid filling the context with near-identical passages from one episode.
+        count = seen_urls.get(episode.source_url, 0)
+        if count >= 2:
+            continue
+        seen_urls[episode.source_url] = count + 1
         url = episode.source_url
         if chunk.timestamp_seconds is not None and "youtube.com/watch?" in url:
             url += f"&t={chunk.timestamp_seconds}s"
@@ -101,4 +108,6 @@ async def retrieve(query: str, db: Session, settings: Settings, limit: int = 5) 
                 distance=d,
             )
         )
+        if len(evidence) >= limit:
+            break
     return evidence

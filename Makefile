@@ -1,7 +1,7 @@
 .PHONY: dev test lint fmt down logs ingest eval reindex
 
 dev:
-	docker compose up db api
+	docker compose up --build db api
 
 test:
 	python -m pytest tests/ -v
@@ -22,7 +22,7 @@ ingest:
 	docker compose run --rm ingest
 
 eval:
-	python tests/eval/test_benchmark.py
+	python tests/eval/test_benchmark.py $(EVAL_ARGS)
 
 reindex:
 	@echo "Run make ingest after source changes; unchanged episodes are skipped."

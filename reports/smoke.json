@@ -1,0 +1,52 @@
+{
+  "status": "partial",
+  "semantic_review_required": true,
+  "config": {
+    "provider": "ollama",
+    "model": "llama3.2:3b",
+    "embed_model": "nomic-embed-text",
+    "max_cosine_distance": 0.35,
+    "available_providers": [
+      "ollama"
+    ],
+    "agent_runtime": "Pi Coding Agent"
+  },
+  "library": {
+    "episodes": 123,
+    "chunks": 5881,
+    "embedding_model": "nomic-embed-text",
+    "quarantined_episodes": 60
+  },
+  "summary": {
+    "supported": {
+      "passed": 0,
+      "total": 1
+    },
+    "unsupported": {
+      "passed": 0,
+      "total": 0
+    },
+    "ship30": {
+      "passed": 0,
+      "total": 0
+    },
+    "artifact": {
+      "passed": 0,
+      "total": 0
+    }
+  },
+  "p95_completion_seconds": 294.95,
+  "cases": [
+    {
+      "query": "What is the Jobs to be Done framework?",
+      "kind": "supported",
+      "passed": false,
+      "error": null,
+      "seconds": 294.95,
+      "status": "refused",
+      "words": 28,
+      "answer": "I could not find relevant evidence in the indexed Lenny's Podcast transcripts to support an answer. Try a more specific product or growth question, or index more episodes.",
+      "citations": []
+    }
+  ]
+}

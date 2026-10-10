@@ -1,14 +1,14 @@
 # Operator runbook
 
 Follow README for the current host-based development path. The complete containerized
-deployment is still pending. Do not remove a database volume to fix a connection issue.
+deployment is implemented but a clean build is blocked by npm installation. Do not remove a database volume to fix a connection issue.
 
 | Symptom | Check / recovery |
 |---|---|
 | GitHub/npm connection resets | Use an allowed network; retry the README install/clone commands |
 | Database password failure on localhost:5432 | This project uses localhost:55432; 5432 may belong to host PostgreSQL |
 | Ollama down inside Docker | Set OLLAMA_BASE_URL_DOCKER=http://host.docker.internal:11434; check host Ollama |
-| Health says missing_models | Check ollama list; pull both llama3.1:8b and nomic-embed-text |
+| Health says missing_models | Check ollama list; pull both llama3.2:3b and nomic-embed-text |
 | Library shows zero episodes | Apply migrations, clone corpus and run ingestion with host DB/Ollama URLs |
 | AGENT_UNAVAILABLE / GENERATION_FAILED | Verify Node >=22.19 and apps/agent dependencies; test selected model |
 | MODEL_TIMEOUT | Check memory/load; shorten request or select and document a smaller Ollama model |
@@ -37,6 +37,8 @@ deployment is still pending. Do not remove a database volume to fix a connection
 
 ## Before submission
 
-Finish Pi/corpus/frontend verification; add lockfiles and full Compose packaging; implement
-and run the golden evaluation; export redacted real agent transcripts; update docs with
-measured behavior; perform a fresh-clone setup; record the required camera-enabled demo.
+Resolve the live supported-query refusal, then run the full 25-case evaluation and review
+claim support. Verify a clean Docker build and credentialed cloud call on an allowed network.
+Finish the manual UI checks and record the required camera-enabled demo. Lockfiles, the
+evaluation harness and full Compose packaging are now implemented; implementation alone
+is not acceptance evidence.
