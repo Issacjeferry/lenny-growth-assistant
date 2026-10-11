@@ -1,5 +1,7 @@
 """Sanitize HTML before wrapping it in a restrictive, standalone document."""
 
+from html.parser import HTMLParser
+
 import nh3
 
 CSP = (
@@ -47,6 +49,21 @@ TAGS = {
     "dd",
     "a",
 }
+
+
+def has_document_structure(content: str) -> bool:
+    """Do not label plain text or Markdown as a generated HTML document."""
+
+    class Structure(HTMLParser):
+        found = False
+
+        def handle_starttag(self, tag, attrs):
+            if tag in {"h1", "h2", "p", "section", "article", "table", "ul", "ol"}:
+                self.found = True
+
+    parser = Structure()
+    parser.feed(content)
+    return parser.found
 
 
 def sanitize_html(content: str) -> str:

@@ -1,0 +1,57 @@
+{
+  "status": "partial",
+  "semantic_review_required": true,
+  "config": {
+    "provider": "ollama",
+    "model": "llama3.2:3b",
+    "embed_model": "nomic-embed-text",
+    "max_cosine_distance": 0.35,
+    "available_providers": [
+      "ollama"
+    ],
+    "provider_models": {
+      "ollama": "llama3.2:3b"
+    },
+    "agent_runtime": "Pi Coding Agent"
+  },
+  "library": {
+    "episodes": 286,
+    "chunks": 13638,
+    "embedding_model": "nomic-embed-text",
+    "quarantined_episodes": 60
+  },
+  "summary": {
+    "supported": {
+      "passed": 0,
+      "total": 0
+    },
+    "unsupported": {
+      "passed": 0,
+      "total": 0
+    },
+    "ship30": {
+      "passed": 0,
+      "total": 1
+    },
+    "artifact": {
+      "passed": 0,
+      "total": 0
+    }
+  },
+  "p95_completion_seconds": 6354.7,
+  "cases": [
+    {
+      "query": "Write a Ship 30 for 30 essay about finding product market fit.",
+      "session_id": "0ee10557-5bb0-4c39-8add-655901213af9",
+      "kind": "ship30",
+      "passed": false,
+      "error": "HTTPStatusError:MODEL_TIMEOUT",
+      "seconds": 6354.7,
+      "status": null,
+      "words": 0,
+      "answer": "",
+      "artifact": null,
+      "citations": []
+    }
+  ]
+}

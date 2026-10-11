@@ -4,7 +4,7 @@ import httpx
 import pytest
 
 from packages.retrieval.engine import embed, fuse
-from packages.retrieval.transcripts import parse_transcript
+from packages.retrieval.transcripts import conflicting_sources, parse_transcript
 from packages.shared.config import Settings
 from packages.shared.errors import ProviderUnavailableError
 
@@ -78,3 +78,15 @@ def test_parser_quarantines_conflicting_named_guest(tmp_path):
     )
     with pytest.raises(ValueError, match="Guest conflicts"):
         parse_transcript(path)
+
+
+def test_same_transcript_with_different_url_is_ambiguous(tmp_path):
+    first = transcript_file(tmp_path)
+    second = tmp_path / "duplicate.md"
+    second.write_text(
+        first.read_text().replace("https://example.com/test", "https://example.com/other"),
+        encoding="utf-8",
+    )
+    assert conflicting_sources([first, second]) == {first, second}
+    second.write_text(first.read_text(), encoding="utf-8")
+    assert conflicting_sources([first, second]) == set()

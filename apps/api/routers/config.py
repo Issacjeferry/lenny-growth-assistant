@@ -18,4 +18,10 @@ async def get_config(
         max_cosine_distance=settings.MAX_COSINE_DISTANCE,
         available_providers=["ollama"]
         + (["anthropic"] if settings.ANTHROPIC_API_KEY and settings.ANTHROPIC_MODEL else []),
+        provider_models={"ollama": settings.OLLAMA_MODEL}
+        | (
+            {"anthropic": settings.ANTHROPIC_MODEL}
+            if settings.ANTHROPIC_API_KEY and settings.ANTHROPIC_MODEL
+            else {}
+        ),
     )

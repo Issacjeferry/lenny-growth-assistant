@@ -53,6 +53,7 @@ async def app_error_exception_handler(request: Request, exc: Exception) -> JSONR
 
 
 def error_response(request: Request, status_code: int, code: str, message: str) -> JSONResponse:
+    request.state.error_code = code
     payload = ErrorResponse(
         error_code=code,
         message=message,

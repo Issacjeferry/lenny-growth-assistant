@@ -83,6 +83,7 @@ def create_app() -> FastAPI:
                 path=request.url.path,
                 status_code=response.status_code,
                 latency_ms=latency_ms,
+                error_code=getattr(request.state, "error_code", None),
             )
             return response
         except Exception:

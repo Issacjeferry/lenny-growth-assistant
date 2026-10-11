@@ -1,0 +1,95 @@
+python -m pytest tests/ -v
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\issac\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\issac\OneDrive\Desktop\lenny-growth-assistant
+configfile: pyproject.toml
+plugins: anyio-4.15.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 50 items
+
+tests/integration/test_config.py::test_get_config PASSED                 [  2%]
+tests/integration/test_errors.py::test_validation_uses_envelope_without_echoing_input PASSED [  4%]
+tests/integration/test_errors.py::test_not_found_uses_envelope PASSED    [  6%]
+tests/integration/test_errors.py::test_provider_failure_preserves_error_and_request_id PASSED [  8%]
+tests/integration/test_errors.py::test_unexpected_failure_hides_internal_details PASSED [ 10%]
+tests/integration/test_errors.py::test_untrusted_request_id_is_replaced PASSED [ 12%]
+tests/integration/test_health.py::test_health_all_ok PASSED              [ 14%]
+tests/integration/test_health.py::test_health_reports_missing_generation_model PASSED [ 16%]
+tests/integration/test_health.py::test_health_ollama_down PASSED         [ 18%]
+tests/integration/test_health.py::test_health_db_down PASSED             [ 20%]
+tests/integration/test_sessions.py::test_sessions_persist_independent_context_and_metadata PASSED [ 22%]
+tests/integration/test_sessions.py::test_empty_retrieval_refuses_without_calling_model PASSED [ 24%]
+tests/integration/test_sessions.py::test_failed_turn_rolls_back_and_can_be_retried PASSED [ 26%]
+tests/integration/test_sessions.py::test_html_artifact_is_sanitized_before_persistence PASSED [ 28%]
+tests/integration/test_sessions.py::test_uncited_generation_is_an_error_not_a_no_evidence_refusal PASSED [ 30%]
+tests/integration/test_sessions.py::test_plain_text_is_not_persisted_as_html_after_failed_repair PASSED [ 32%]
+tests/integration/test_sessions.py::test_direct_instruction_exfiltration_refuses_before_search PASSED [ 34%]
+tests/integration/test_sessions.py::test_ship30_uses_one_bounded_length_repair PASSED [ 36%]
+tests/integration/test_sessions.py::test_ship30_keeps_review_status_if_repair_still_short PASSED [ 38%]
+tests/integration/test_sessions.py::test_followup_retrieves_with_own_prior_question_and_no_other_chat_history PASSED [ 40%]
+tests/unit/test_agent.py::test_fabricated_source_ids_reject_entire_answer PASSED [ 42%]
+tests/unit/test_agent.py::test_html_removes_active_content_and_navigation[<script>alert(1)</script>] PASSED [ 44%]
+tests/unit/test_agent.py::test_html_removes_active_content_and_navigation[<img src="https://evil.test" onerror="alert(1)">] PASSED [ 46%]
+tests/unit/test_agent.py::test_html_removes_active_content_and_navigation[<iframe src="https://evil.test"></iframe>] PASSED [ 48%]
+tests/unit/test_agent.py::test_html_removes_active_content_and_navigation[<svg onload="alert(1)"></svg>] PASSED [ 50%]
+tests/unit/test_agent.py::test_html_removes_active_content_and_navigation[<meta http-equiv="refresh" content="0;url=https://evil.test">] PASSED [ 52%]
+tests/unit/test_agent.py::test_html_removes_active_content_and_navigation[<form action="https://evil.test"><input></form>] PASSED [ 54%]
+tests/unit/test_agent.py::test_html_removes_active_content_and_navigation[<a href="javascript:alert(1)" onclick="alert(1)">click</a>] PASSED [ 56%]
+tests/unit/test_agent.py::test_html_retains_css_but_has_network_policy PASSED [ 58%]
+tests/unit/test_agent.py::test_explicit_skill_wins_over_keyword_routing PASSED [ 60%]
+tests/unit/test_agent.py::test_cloud_requires_explicit_model_and_key PASSED [ 62%]
+tests/unit/test_agent.py::test_model_timeout_kills_process PASSED        [ 64%]
+tests/unit/test_agent.py::test_normalizes_only_explicit_citation_markers PASSED [ 66%]
+tests/unit/test_agent.py::test_html_structure_requires_document_elements PASSED [ 68%]
+tests/unit/test_agent.py::test_prompt_engineering_topic_is_still_allowed PASSED [ 70%]
+tests/unit/test_agent.py::test_artifact_search_uses_topic_not_format_instructions PASSED [ 72%]
+tests/unit/test_audit.py::test_audit_keeps_canonical_and_quarantines_alias_changed_and_missing PASSED [ 74%]
+tests/unit/test_evaluation.py::test_declared_set_has_all_cases_and_failure_is_not_a_refusal PASSED [ 76%]
+tests/unit/test_evaluation.py::test_essay_word_target_is_part_of_acceptance PASSED [ 78%]
+tests/unit/test_evaluation.py::test_html_wrapper_does_not_make_plain_text_a_valid_artifact PASSED [ 80%]
+tests/unit/test_ingest.py::test_ingestion_skip_refresh_and_failed_embedding_preserve_stored_passages PASSED [ 82%]
+tests/unit/test_retrieval.py::test_chunks_preserve_exact_source_offsets_and_timestamp PASSED [ 84%]
+tests/unit/test_retrieval.py::test_parser_rejects_missing_provenance PASSED [ 86%]
+tests/unit/test_retrieval.py::test_rrf_promotes_agreement_without_counting_duplicates PASSED [ 88%]
+tests/unit/test_retrieval.py::test_embedding_failure_is_not_reported_as_no_evidence PASSED [ 90%]
+tests/unit/test_retrieval.py::test_embedding_dimension_mismatch_is_rejected PASSED [ 92%]
+tests/unit/test_retrieval.py::test_parser_reads_minute_second_timestamps PASSED [ 94%]
+tests/unit/test_retrieval.py::test_parser_quarantines_conflicting_named_guest PASSED [ 96%]
+tests/unit/test_retrieval.py::test_same_transcript_with_different_url_is_ambiguous PASSED [ 98%]
+tests/unit/test_settings.py::test_default_settings_load PASSED           [100%]
+
+============================== warnings summary ===============================
+..\..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\issac\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 50 passed, 1 warning in 17.05s ========================
+node --test apps/agent/bridge.test.mjs
+✔ Pi sends bounded, tool-free Ollama requests and returns streamed text (13032.7255ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13806.5456
+npm --prefix apps/web test
+
+> lenny-growth-workspace@0.1.0 test
+> vitest run
+
+
+ RUN  v3.2.7 C:/Users/issac/OneDrive/Desktop/lenny-growth-assistant/apps/web
+
+ ✓ src/rendering.test.tsx (5 tests) 20ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  16:33:43
+   Duration  7.40s (transform 689ms, setup 0ms, collect 2.07s, tests 20ms, environment 0ms, prepare 2.36s)
+
+All checks passed!
+Success: no issues found in 29 source files

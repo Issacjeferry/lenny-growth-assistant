@@ -1,0 +1,4 @@
+# Pi reserves 4,096 context tokens in addition to prompt and output budgets.
+# A named local copy preserves the user's original llama3.2:3b configuration.
+FROM llama3.2:3b
+PARAMETER num_ctx 12288

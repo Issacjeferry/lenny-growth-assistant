@@ -1,0 +1,21 @@
+{
+  "checked_at": "2026-10-11T11:07:16.572507+00:00",
+  "api_restart_preserved_exact_sessions": true,
+  "database_restart_tested": false,
+  "sessions": [
+    {
+      "id": "d767ae3b-4e03-462c-919a-cec0270ad096",
+      "messages": 0,
+      "artifacts": 0,
+      "stored_user_metadata": {
+        "purpose": "verification"
+      }
+    },
+    {
+      "id": "f8fb58b9-1406-46aa-8635-352b7b220672",
+      "messages": 2,
+      "artifacts": 1,
+      "stored_user_metadata": {}
+    }
+  ]
+}

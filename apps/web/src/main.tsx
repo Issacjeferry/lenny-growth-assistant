@@ -25,6 +25,7 @@ function App() {
   const [provider, setProvider] = useState('ollama');
   const [providers, setProviders] = useState(['ollama']);
   const [model, setModel] = useState('');
+  const [providerModels, setProviderModels] = useState<Record<string, string>>({});
   const [health, setHealth] = useState('Connecting');
   const [library, setLibrary] = useState<{episodes: number; chunks: number} | null>(null);
   const [error, setError] = useState('');
@@ -43,13 +44,13 @@ function App() {
   async function refresh() {
     const results = await Promise.allSettled([
       api<Session[]>('/api/sessions'), api<{episodes: number; chunks: number}>('/api/library'),
-      api<{provider: string; model: string; available_providers: string[]}>('/config'),
+      api<{provider: string; model: string; available_providers: string[]; provider_models: Record<string, string>}>('/config'),
       api<{status: string; ollama: string}>('/health'),
     ]);
     if (results[0].status === 'fulfilled') setSessions(results[0].value);
     if (results[1].status === 'fulfilled') setLibrary(results[1].value);
     if (results[2].status === 'fulfilled') {
-      const value = results[2].value; setProvider(value.provider); setProviders(value.available_providers); setModel(value.model);
+      const value = results[2].value; setProvider(value.provider); setProviders(value.available_providers); setModel(value.model); setProviderModels(value.provider_models || {});
     }
     if (results[3].status === 'fulfilled') setHealth(results[3].value.status === 'ok' ? 'Ready' : results[3].value.ollama === 'missing_models' ? 'Model setup needed' : 'Service needs attention');
     else setHealth('API unavailable');
@@ -146,9 +147,9 @@ function App() {
         {error && <div role="alert" className="error"><span>{error}</span><button aria-label="Dismiss error" onClick={() => setError('')}>×</button></div>}
         <form className="composer" onSubmit={event => void send(event)}>
           <textarea ref={composer} value={input} onChange={e => setInput(e.target.value)} maxLength={6000} placeholder={mode === 'qa' ? 'What are you working through?' : 'What would you like to create?'} aria-label="Your question or request" rows={2} disabled={busy} onKeyDown={e => {if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {e.preventDefault(); e.currentTarget.form?.requestSubmit();}}}/>
-          <div className="composer-tools"><div><select aria-label="Output type" value={mode} onChange={e => setMode(e.target.value as Mode)} disabled={busy}>{modes.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select><span className="tool-divider"/><select aria-label="Model provider" value={provider} onChange={e => setProvider(e.target.value)} disabled={busy}>{providers.map(p => <option key={p} value={p}>{p === 'ollama' ? '● Ollama · Local' : 'Anthropic · Cloud'}</option>)}</select></div><button className="send" disabled={busy || !input.trim()} aria-label="Send message">↑</button></div>
+          <div className="composer-tools"><div><select aria-label="Output type" value={mode} onChange={e => setMode(e.target.value as Mode)} disabled={busy}>{modes.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select><span className="tool-divider"/><select aria-label="Model provider" value={provider} onChange={e => {setProvider(e.target.value); setModel(providerModels[e.target.value] || '');}} disabled={busy}>{providers.map(p => <option key={p} value={p}>{p === 'ollama' ? '● Ollama · Local' : 'Anthropic · Cloud'}</option>)}</select></div><button className="send" disabled={busy || !input.trim()} aria-label="Send message">↑</button></div>
         </form>
-        <div className="composer-footnote"><span>Every insight starts with a source.</span><span>{provider === 'ollama' ? model || 'Local inference' : 'Selected context is sent to Anthropic'} <span aria-hidden="true">·</span> Shift + Enter for a new line</span></div>
+        <div className="composer-footnote"><span>Every insight starts with a source.</span><span>{provider === 'ollama' ? model || 'Local inference' : `${model} · Context sent to Anthropic`} <span aria-hidden="true">·</span> Shift + Enter for a new line</span></div>
       </div>
     </main>
 

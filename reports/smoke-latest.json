@@ -1,0 +1,52 @@
+{
+  "status": "partial",
+  "semantic_review_required": true,
+  "config": {
+    "provider": "ollama",
+    "model": "llama3.2:3b",
+    "embed_model": "nomic-embed-text",
+    "max_cosine_distance": 0.35,
+    "available_providers": [
+      "ollama"
+    ],
+    "agent_runtime": "Pi Coding Agent"
+  },
+  "library": {
+    "episodes": 286,
+    "chunks": 13638,
+    "embedding_model": "nomic-embed-text",
+    "quarantined_episodes": 60
+  },
+  "summary": {
+    "supported": {
+      "passed": 0,
+      "total": 1
+    },
+    "unsupported": {
+      "passed": 0,
+      "total": 0
+    },
+    "ship30": {
+      "passed": 0,
+      "total": 0
+    },
+    "artifact": {
+      "passed": 0,
+      "total": 0
+    }
+  },
+  "p95_completion_seconds": 99.88,
+  "cases": [
+    {
+      "query": "What is the Jobs to be Done framework?",
+      "kind": "supported",
+      "passed": false,
+      "error": "HTTPStatusError",
+      "seconds": 99.88,
+      "status": null,
+      "words": 0,
+      "answer": "",
+      "citations": []
+    }
+  ]
+}

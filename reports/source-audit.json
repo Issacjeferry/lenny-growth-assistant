@@ -1,0 +1,285 @@
+{
+  "eligible": 276,
+  "quarantined": [
+    {
+      "source_path": "julie-zhuo/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "brandon-chu/transcript.md",
+      "reason": "Guest conflicts with the named guest in the episode title"
+    },
+    {
+      "source_path": "chip-conley/transcript.md",
+      "reason": "Guest conflicts with the named guest in the episode title"
+    },
+    {
+      "source_path": "marty-cagan/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "elena-verna/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "gaurav-misra/transcript.md",
+      "reason": "Guest conflicts with the named guest in the episode title"
+    },
+    {
+      "source_path": "episodes/boz/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "archie-abrams/transcript.md",
+      "reason": "Guest conflicts with the named guest in the episode title"
+    },
+    {
+      "source_path": "julie-zhuo-20/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "gibson-biddle/transcript.md",
+      "reason": "Guest conflicts with the named guest in the episode title"
+    },
+    {
+      "source_path": "april-dunford/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "marty-cagan-20/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "elena-verna-30/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "april-dunford-20/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "episodes/ami-vora/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "madhavan-ramanujam/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "episodes/bill-carr/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/cam-adams/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "alexander-embiricos/transcript.md",
+      "reason": "Guest conflicts with the named guest in the episode title"
+    },
+    {
+      "source_path": "episodes/alisa-cohn/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/andy-johns/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/annie-duke/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/anuj-rathi/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/austin-hay/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/bob-baxley/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/bob-moesta/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/amjad-masad/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/andy-raskin/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/annie-pearl/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/anton-osika/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/asha-sharma/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/ayo-omojola/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/barbra-gago/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/brandon-chu/transcript.md",
+      "reason": "Guest conflicts with the named guest in the episode title"
+    },
+    {
+      "source_path": "episodes/bret-taylor/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "madhavan-ramanujam-20/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "episodes/adam-fishman/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/adam-grenier/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/albert-cheng/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/andy-raskin_/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/anneka-gupta/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/bangaly-kaba/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/ben-horowitz/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/ben-williams/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/brian-chesky/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/brian-tolkin/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/carole-robin/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/alex-hardimen/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/april-dunford/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "episodes/archie-abrams/transcript.md",
+      "reason": "Guest conflicts with the named guest in the episode title"
+    },
+    {
+      "source_path": "episodes/benjamin-mann/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/bob-moesta-20/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/brendan-foody/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/brian-balfour/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/casey-winters/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/ada-chen-rekhi/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/alex-komoroske/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/camille-hearst/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/casey-winters_/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/arielle-jackson/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/carilu-dietrich/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/adriel-frederick/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/andrew-wilkinson/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/april-dunford-20/transcript.md",
+      "reason": "Identical transcript body has conflicting source URLs"
+    },
+    {
+      "source_path": "episodes/benjamin-lauzier/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/camille-fournier/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/camille-ricketts/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/alexander-embiricos/transcript.md",
+      "reason": "Guest conflicts with the named guest in the episode title"
+    },
+    {
+      "source_path": "episodes/aparna-chennapragada/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    },
+    {
+      "source_path": "episodes/aishwarya-naresh-reganti-kiriti-badam/transcript.md",
+      "reason": "Duplicate source path alias; canonical record retained"
+    }
+  ]
+}

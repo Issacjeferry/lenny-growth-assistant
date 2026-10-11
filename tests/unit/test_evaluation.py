@@ -20,3 +20,18 @@ def test_essay_word_target_is_part_of_acceptance():
         }
     }
     assert not score(Case("essay", "ship30"), response)
+
+
+def test_html_wrapper_does_not_make_plain_text_a_valid_artifact():
+    from packages.agent.artifacts import sanitize_html
+
+    response = {
+        "message": {
+            "status": "complete",
+            "citations": [{"id": "source", "title": "Episode", "url": "https://example.com"}],
+        },
+        "artifact": {"id": "artifact", "type": "html", "content": sanitize_html("Just text [S1]")},
+    }
+    assert not score(Case("Create an HTML brief", "artifact"), response)
+    response["artifact"]["content"] = sanitize_html("<h1>A brief</h1><p>Advice [S1]</p>")
+    assert score(Case("Create an HTML brief", "artifact"), response)

@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+psycopg://postgres:postgres@db:5432/lenny"
     LLM_PROVIDER: LLMProviderType = LLMProviderType.OLLAMA
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "llama3.2:3b"
+    OLLAMA_MODEL: str = "lenny-local"
     OLLAMA_EMBED_MODEL: str = "nomic-embed-text"
     ANTHROPIC_API_KEY: Optional[str] = None
     ANTHROPIC_MODEL: str = ""

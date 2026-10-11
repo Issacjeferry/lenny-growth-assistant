@@ -1,15 +1,17 @@
 .git
 .env
 .env.*
-node_modules
+**/node_modules
+**/dist
 **/__pycache__
 **/.pytest_cache
-apps/web/*.tsbuildinfo
-# agent and web node_modules are pre-built and copied into the image
-# to avoid npm install timing out in Docker build layers
+**/*.tsbuildinfo
 .venv
+.mypy_cache
+.ruff_cache
 tmp
 scratch
 data
 reports
 output
+docs/logs

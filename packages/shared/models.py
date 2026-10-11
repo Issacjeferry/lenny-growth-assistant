@@ -21,6 +21,7 @@ class ConfigResponse(BaseModel):
     embed_model: str
     max_cosine_distance: float
     available_providers: list[str] = []
+    provider_models: dict[str, str] = {}
     agent_runtime: str = "Pi Coding Agent"
 
 

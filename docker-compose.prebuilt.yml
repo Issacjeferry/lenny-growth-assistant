@@ -1,0 +1,7 @@
+services:
+  api:
+    build:
+      dockerfile: apps/api/Dockerfile.prebuilt
+  ingest:
+    build:
+      dockerfile: apps/api/Dockerfile.prebuilt

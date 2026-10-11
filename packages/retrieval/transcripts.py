@@ -26,6 +26,7 @@ class Transcript:
     url: str
     digest: str
     passages: list[Passage]
+    body_digest: str
 
 
 def parse_transcript(path: Path, max_chars: int = 2400, overlap: int = 300) -> Transcript:
@@ -55,6 +56,10 @@ def parse_transcript(path: Path, max_chars: int = 2400, overlap: int = 300) -> T
         if not title_names.intersection(guest_names):
             raise ValueError("Guest conflicts with the named guest in the episode title")
     start = match.end()
+    # Ignore the episode heading when comparing duplicated timestamped bodies.
+    first_stamp = TIMESTAMP.search(raw, start)
+    body = raw[first_stamp.start() if first_stamp else start :]
+    body_digest = hashlib.sha256(body.encode()).hexdigest()
     passages = []
     stamps = [
         (m.start(), sum(int(n or 0) * factor for n, factor in zip(m.groups(), (3600, 60, 1))))
@@ -77,4 +82,23 @@ def parse_transcript(path: Path, max_chars: int = 2400, overlap: int = 300) -> T
         if end == len(raw):
             break
         start = max(start + 1, end - overlap)
-    return Transcript(title, guest, url, hashlib.sha256(raw.encode()).hexdigest(), passages)
+    return Transcript(
+        title, guest, url, hashlib.sha256(raw.encode()).hexdigest(), passages, body_digest
+    )
+
+
+def conflicting_sources(paths: list[Path]) -> set[Path]:
+    """Identical timestamped transcripts cannot establish two different source URLs."""
+    bodies: dict[str, list[tuple[Path, str]]] = {}
+    for path in paths:
+        try:
+            record = parse_transcript(path)
+        except ValueError:
+            continue
+        bodies.setdefault(record.body_digest, []).append((path, record.url))
+    return {
+        path
+        for group in bodies.values()
+        if len({url for _, url in group}) > 1
+        for path, _ in group
+    }

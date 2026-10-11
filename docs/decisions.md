@@ -29,3 +29,19 @@
 10. Production packaging builds React and bundles Node/Pi with FastAPI. A clean Docker build failed
     during npm installation on this network. Host development remains the available fallback;
     packaging must be verified on a network where dependency installation succeeds.
+
+## 2026-10-11 — Measured runtime corrections
+
+11. A real Pi transport test exposed a one-token output budget: Pi subtracts 4,096 safety
+    tokens, equal to our old context configuration. Configure a named local model with
+    12,288 tokens and explicitly send Ollama's supported max_tokens field. Keep the original
+    model untouched. The test verifies actual SDK request serialization and no active tools.
+12. Reject plain text masquerading as HTML; make one bounded format correction and otherwise
+    return an actionable error without persisting a partial turn. An essay outside the target
+    receives a review status after one bounded length revision. Structural checks are not
+    semantic verification, and editorial failures remain recorded.
+13. Exclude identical timestamped bodies with conflicting source URLs. The updated audit
+    leaves 276 eligible episodes and 70 quarantined records, preserving all raw/history data.
+14. The standard multi-stage image now builds successfully with npm lockfile installs.
+    Copy the completed frontend stage before installing agent dependencies so these installs
+    are ordered. This success does not establish the precise cause of the earlier npm failure.

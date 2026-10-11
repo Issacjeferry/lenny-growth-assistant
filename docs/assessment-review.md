@@ -47,21 +47,28 @@ matters more than animations, landing-page decoration or feature count.
 
 ## Required corrections and current state
 
-| Requirement | Current checkpoint | Remaining proof |
+| Requirement | Current state | Remaining proof |
 |---|---|---|
-| FastAPI and contracts | Implemented health, config, library, sessions and messages | Exercise through the built UI |
-| PostgreSQL persistence and metadata | Schema/migration implemented; migration applied to PostgreSQL | Real-provider restart and concurrent-turn tests |
-| Required agent runtime | Pi SDK bridge written with tools/discovery disabled | Install npm package and execute real local and cloud calls |
-| Local demo | Ollama reachable; generation model pull started | Confirm model installed and benchmark a real conversation |
-| Cloud integration | Anthropic configuration and Pi adapter written | Authenticated cloud smoke test; never claim success without one |
-| Transcript ingestion | Parser, offsets, timestamps, embeddings, transactional refresh | Download corpus; index and inspect actual passages |
-| Grounded conversation | Semantic gate, hybrid ordering, ID checks, bounded session history | Calibrate relevance and test semantic claim support on corpus |
-| Ship 30 skill | Source-derived skill and word-count review flag | Reach length/structure target on actual local generation |
-| Artifact viewer | Sanitizer, CSP, iframe and Markdown rendering implemented | Browser XSS/network checks and responsive QA |
-| One-command startup | Database/API scaffold only | Package Node/Pi and frontend; verify clean-clone startup |
-| Evaluation | Deterministic unit/integration tests | Build and run a 25-case corpus benchmark; report denominators |
-| Documentation and demo | Current checkpoint/runbook available | Finalize docs from measured behavior; record 2–3 minute camera demo |
-| Agent transcripts | Honest development summary recorded | Add actual redacted transcript export, including failures |
+| FastAPI and contracts | Implemented; typed endpoints and structured failures | Verified by regression tests |
+| PostgreSQL persistence | Isolation/rollback tests; saved messages, artifacts and metadata survive API restart | DB restart not yet exercised |
+| Required agent runtime | Real Pi SDK installed/invoked; zero tools; request serialization tested | Credentialed cloud response pending |
+| Local demo | Ollama lenny-local (llama3.2:3b, 12,288 context) | Review generated claims |
+| Cloud integration | Anthropic adapter and explicit UI selection implemented | API key/model are still absent locally |
+| Corpus | 276 eligible episodes / 13,120 passages; 70 quarantined records | Raw snapshot hashes recorded; source commit unknown |
+| Grounding | Full run: 12/15 supported, 5/5 refusal cases pass structurally | Semantic accuracy is not established by these scores |
+| Ship 30 | Six-section workflow in a single Pi session; bounded revision | Targeted live rerun in progress |
+| Artifact viewer | Sanitizer/CSP/opaque iframe; real preview/source/export verified | Targeted live generation rerun in progress |
+| Startup | Standard Docker build succeeds from npm lockfiles; packaged health is OK | Verified locally, not on a second clean machine |
+| Tests | 50 backend, 5 frontend and 2 Pi transport tests pass | Verification output and development notes retained |
+| UI | Mobile layout/source inspector; real HTML artifact preview and export | Full accessibility audit deferred |
+| Agent logs | Actual actions/results with failures; reasoning/system noise removed | Review redacted logs before publishing |
+| Demo | Camera-enabled recording script and runbook provided | Applicant recording/upload required |
+
+The complete baseline report is `reports/evaluation-final.json`: it **failed overall** because
+both essays and two artifacts missed their gates. Several long durations include machine
+suspension and cannot establish a useful p95. Subsequent targeted runs are recorded separately;
+they must not be relabeled as a fresh full-suite pass. The earlier 1,194-word essay met length
+but failed editorial review. See `reports/README.md` for provenance and limitations.
 
 ## Scope choices
 

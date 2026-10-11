@@ -7,7 +7,7 @@ from pathlib import Path
 from sqlalchemy import delete, select
 
 from packages.retrieval.engine import embed
-from packages.retrieval.transcripts import parse_transcript
+from packages.retrieval.transcripts import conflicting_sources, parse_transcript
 from packages.shared.config import get_settings
 from packages.shared.db import SessionLocal
 from packages.shared.db_models import Chunk, Episode
@@ -19,6 +19,7 @@ async def ingest(
 ) -> dict[str, int]:
     settings = get_settings()
     paths = sorted(root.rglob("transcript.md"))
+    conflicts = conflicting_sources(paths)
     if target_slug:
         paths = [path for path in paths if path.parent.name == target_slug]
     if not paths:
@@ -30,15 +31,22 @@ async def ingest(
     counts = {"indexed": 0, "skipped": 0, "failed": 0, "chunks": 0}
     version = f"chars2400-overlap300-v1:{settings.OLLAMA_EMBED_MODEL}"
     for path in paths:
+        source_path = f"{path.parent.name}/transcript.md"
         try:
+            if path in conflicts:
+                raise ValueError("Identical transcript body has conflicting source URLs")
             transcript = parse_transcript(path)
         except ValueError:
+            with SessionLocal() as db:
+                episode = db.scalar(select(Episode).where(Episode.source_path == source_path))
+                if episode:
+                    episode.source_valid = False
+                    db.commit()
             counts["failed"] += 1
             get_logger().error(
-                "transcript_invalid", source_path=path.name, error_code="INVALID_TRANSCRIPT"
+                "transcript_invalid", source_path=source_path, error_code="INVALID_TRANSCRIPT"
             )
             continue
-        source_path = f"{path.parent.name}/transcript.md"
         with SessionLocal() as db:
             episode = db.scalar(select(Episode).where(Episode.source_path == source_path))
             if (
@@ -47,15 +55,16 @@ async def ingest(
                 and episode.index_version == version
                 and not force
             ):
+                episode.source_valid = True
+                db.commit()
                 counts["skipped"] += 1
                 continue
-            tasks = []
-            for i in range(0, len(transcript.passages), 16):
-                tasks.append(embed([p.content for p in transcript.passages[i : i + 16]], settings))
-            results = await asyncio.gather(*tasks)
             vectors = []
-            for r in results:
-                vectors.extend(r)
+            # Bound CPU/memory pressure instead of queuing an entire episode at once.
+            for i in range(0, len(transcript.passages), 8):
+                vectors.extend(
+                    await embed([p.content for p in transcript.passages[i : i + 8]], settings)
+                )
             if episode is None:
                 episode = Episode(source_path=source_path)
                 db.add(episode)

@@ -1,10 +1,16 @@
-.PHONY: dev test lint fmt down logs ingest eval reindex
+.PHONY: dev test lint fmt down logs ingest eval reindex setup-model
 
 dev:
 	docker compose up --build db api
 
 test:
 	python -m pytest tests/ -v
+	node --test apps/agent/bridge.test.mjs
+	npm --prefix apps/web test
+
+setup-model:
+	ollama pull llama3.2:3b
+	ollama create lenny-local -f models/Modelfile
 
 lint:
 	ruff check . && mypy apps packages

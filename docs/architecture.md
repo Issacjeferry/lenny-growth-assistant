@@ -27,7 +27,7 @@ flowchart LR
    user question. Embed the query using nomic-embed-text (768 dimensions).
 3. Retrieve nearest passages from eligible episodes. Apply the cosine-distance cutoff
    (default 0.35), then reciprocal rank fusion with PostgreSQL full-text ranks (k=60).
-   Supply three passages, with at most two from one episode URL.
+   Supply three complete passages, with at most two from one episode URL and no exact text duplicates.
 4. Without evidence, return an explicit refusal. Embedding outages return a service error.
 5. Choose Q&A, Ship 30, HTML or Markdown instructions. Supply bounded history and source
    excerpts as untrusted data to Pi. Pi runs without tools, discovered instructions,
@@ -48,20 +48,21 @@ Ingestion reads official corpus YAML frontmatter and transcript bodies, creates 
 2,400-character passages, embeds batches and replaces each episode transactionally.
 Unchanged content and index versions are skipped. Embedding truncation is enabled to handle
 unusually token-dense text. The source audit quarantines missing/changed sources, duplicate
-path aliases and detectable guest/title conflicts; it preserves raw files and existing rows.
+path aliases, identical bodies with different URLs and detectable guest/title conflicts; it preserves raw files and existing rows.
 This conservative check does not independently verify every upstream URL.
 
 ## Configuration and deployment
 
-The default local generation model is llama3.2:3b, a documented CPU-friendly alternative to
-llama3.1:8b. Model performance depends on hardware. Anthropic requires both key and model ID;
+The default local model is `lenny-local`, a llama3.2:3b copy with 12,288 context tokens,
+a documented CPU-friendly alternative to llama3.1:8b. Pi reserves 4,096 safety tokens;
+the configured context must leave room for prompts and 3,000 essay output tokens. Model performance depends on hardware. Anthropic requires both key and model ID;
 OpenAI settings are reserved, not an implemented provider. API configuration exposes no keys.
 
 The production Dockerfile builds the React bundle and bundles Python + Node + locked Pi
 packages. FastAPI serves the bundle. Compose runs PostgreSQL and API; Ollama runs on the host.
-A separate ingestion profile mounts raw/processed data. Container packaging is implemented
-but its fresh build is blocked by npm installation on the development network; use the
-README host path until a successful clean build is recorded.
+A separate ingestion profile mounts raw/processed data. The standard Docker build succeeded
+on 11 October 2026 with fresh npm installation stages; the prebuilt alternative remains
+documented for restricted networks. Windows host development is also supported.
 
 Local ports bind to loopback. This demo has no authentication and does not support shared
 hosting. See security.md for artifact isolation, provider disclosure and remaining risks.

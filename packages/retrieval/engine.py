@@ -87,12 +87,14 @@ async def retrieve(query: str, db: Session, settings: Settings, limit: int = 5) 
     order = fuse(list(eligible), [key for key in keyword_ids if key in eligible])
     evidence = []
     seen_urls: dict[str, int] = {}
+    seen_text = set()
     for key in order:
         chunk, episode, d = eligible[key]
         # Avoid filling the context with near-identical passages from one episode.
         count = seen_urls.get(episode.source_url, 0)
-        if count >= 2:
+        if count >= 2 or chunk.content in seen_text:
             continue
+        seen_text.add(chunk.content)
         seen_urls[episode.source_url] = count + 1
         url = episode.source_url
         if chunk.timestamp_seconds is not None and "youtube.com/watch?" in url:

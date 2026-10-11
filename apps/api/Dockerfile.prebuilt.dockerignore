@@ -1,0 +1,16 @@
+.git
+.env
+.env.*
+apps/web/node_modules
+**/__pycache__
+**/.pytest_cache
+**/*.tsbuildinfo
+.venv
+.mypy_cache
+.ruff_cache
+tmp
+scratch
+data
+reports
+output
+docs/logs

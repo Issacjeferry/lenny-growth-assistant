@@ -1,0 +1,70 @@
+{
+  "status": "partial",
+  "semantic_review_required": true,
+  "config": {
+    "provider": "ollama",
+    "model": "lenny-local",
+    "embed_model": "nomic-embed-text",
+    "max_cosine_distance": 0.35,
+    "available_providers": [
+      "ollama"
+    ],
+    "provider_models": {
+      "ollama": "lenny-local"
+    },
+    "agent_runtime": "Pi Coding Agent"
+  },
+  "library": {
+    "episodes": 276,
+    "chunks": 13120,
+    "embedding_model": "nomic-embed-text",
+    "quarantined_episodes": 70
+  },
+  "summary": {
+    "supported": {
+      "passed": 0,
+      "total": 0
+    },
+    "unsupported": {
+      "passed": 0,
+      "total": 0
+    },
+    "ship30": {
+      "passed": 0,
+      "total": 2
+    },
+    "artifact": {
+      "passed": 0,
+      "total": 0
+    }
+  },
+  "p95_completion_seconds": 1781.81,
+  "cases": [
+    {
+      "query": "Write a Ship 30 for 30 essay about finding product market fit.",
+      "session_id": "660ed6da-cafe-41c5-8de1-a28ff45d611e",
+      "kind": "ship30",
+      "passed": false,
+      "error": "HTTPStatusError:MODEL_TIMEOUT",
+      "seconds": 903.08,
+      "status": null,
+      "words": 0,
+      "answer": "",
+      "artifact": null,
+      "citations": []
+    },
+    {
+      "query": "Create a Ship 30 essay on user retention strategies.",
+      "session_id": "a5c11ea8-081d-47b7-9381-fab5411290de",
+      "kind": "ship30",
+      "passed": false,
+      "error": "HTTPStatusError:MODEL_TIMEOUT",
+      "seconds": 1781.81,
+      "status": null,
+      "words": 0,
+      "answer": "",
+      "artifact": null,
+      "citations": []
+    }
+  ]
+}

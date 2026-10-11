@@ -10,6 +10,8 @@ from pathlib import Path
 
 import httpx
 
+from packages.agent.artifacts import has_document_structure
+
 
 @dataclass
 class Case:
@@ -73,13 +75,17 @@ def score(case: Case, response: dict | None, error: str | None = None) -> bool:
         return (
             bool(artifact.get("id") and artifact.get("content"))
             and artifact.get("type") == expected
+            and (expected != "html" or has_document_structure(artifact.get("content", "")))
         )
     return True
 
 
-async def run_benchmark(base_url: str, output: Path, limit: int | None = None):
+async def run_benchmark(
+    base_url: str, output: Path, limit: int | None = None, kind: str | None = None
+):
     rows = []
-    cases = TEST_CASES[:limit] if limit else TEST_CASES
+    selected = [case for case in TEST_CASES if kind is None or case.expected_type == kind]
+    cases = selected[:limit] if limit else selected
     async with httpx.AsyncClient(timeout=910) as client:
         config = (await client.get(base_url + "/config")).json()
         library = (await client.get(base_url + "/api/library")).json()
@@ -87,6 +93,7 @@ async def run_benchmark(base_url: str, output: Path, limit: int | None = None):
             started = time.monotonic()
             data = None
             error = None
+            session_id = None
             try:
                 created = await client.post(
                     base_url + "/api/sessions", json={"title": f"Eval {i + 1}"}
@@ -106,11 +113,17 @@ async def run_benchmark(base_url: str, output: Path, limit: int | None = None):
                 data = res.json()
             except (httpx.HTTPError, ValueError, KeyError) as exc:
                 error = type(exc).__name__
+                if isinstance(exc, httpx.HTTPStatusError):
+                    try:
+                        error += ":" + exc.response.json().get("error_code", "HTTP_ERROR")
+                    except ValueError:
+                        pass
             passed = score(case, data, error)
             message = (data or {}).get("message", {})
             rows.append(
                 {
                     "query": case.query,
+                    "session_id": session_id,
                     "kind": case.expected_type,
                     "passed": passed,
                     "error": error,
@@ -118,6 +131,7 @@ async def run_benchmark(base_url: str, output: Path, limit: int | None = None):
                     "status": message.get("status"),
                     "words": len(message.get("content", "").split()),
                     "answer": message.get("content", ""),
+                    "artifact": (data or {}).get("artifact"),
                     "citations": [
                         {k: c.get(k) for k in ("id", "label", "title", "url")}
                         for c in message.get("citations", [])
@@ -169,7 +183,10 @@ if __name__ == "__main__":
     parser.add_argument("--base-url", default="http://localhost:8000")
     parser.add_argument("--output", type=Path, default=Path("reports/evaluation.json"))
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--kind", choices=["supported", "unsupported", "ship30", "artifact"])
     args = parser.parse_args()
     if args.limit is not None and not 1 <= args.limit <= len(TEST_CASES):
         parser.error("--limit must be between 1 and 25")
-    raise SystemExit(asyncio.run(run_benchmark(args.base_url.rstrip("/"), args.output, args.limit)))
+    raise SystemExit(
+        asyncio.run(run_benchmark(args.base_url.rstrip("/"), args.output, args.limit, args.kind))
+    )

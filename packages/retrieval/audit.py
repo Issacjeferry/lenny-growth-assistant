@@ -6,13 +6,14 @@ from pathlib import Path
 
 from sqlalchemy import select
 
-from packages.retrieval.transcripts import parse_transcript
+from packages.retrieval.transcripts import conflicting_sources, parse_transcript
 from packages.shared.db import SessionLocal
 from packages.shared.db_models import Episode
 
 
 def audit(root: Path) -> dict:
     files = {f"{p.parent.name}/transcript.md": p for p in root.rglob("transcript.md")}
+    conflicts = conflicting_sources(list(files.values()))
     result: dict = {"eligible": 0, "quarantined": []}
     with SessionLocal() as db:
         seen = set()
@@ -25,6 +26,8 @@ def audit(root: Path) -> dict:
                     raise ValueError("Duplicate source path alias; canonical record retained")
                 if path is None:
                     raise ValueError("Source file is missing")
+                if path in conflicts:
+                    raise ValueError("Identical transcript body has conflicting source URLs")
                 transcript = parse_transcript(path)
                 if transcript.digest != episode.content_hash:
                     raise ValueError("Source changed; re-ingestion required")

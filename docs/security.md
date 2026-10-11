@@ -26,15 +26,17 @@ and code. It does not execute HTML or render remote images. Source links outside
 accept credential-free HTTPS URLs and open with `noopener noreferrer`.
 
 Tests cover scripts, event handlers, SVG, iframes, refresh metadata, forms and javascript URLs.
-Browser verification of CSP resource blocking, parent isolation and malformed-HTML payloads
-is still required before claiming the viewer is verified secure.
+A browser fixture on 11 October 2026 confirmed an opaque iframe, unchanged parent DOM and
+no test-server requests for CSS import/image probes. The fixture is synthetic and separate
+from model output; it does not constitute a full browser penetration test. See the screenshot
+and verification notes in reports/.
 
 ## Agent and data boundaries
 
 Pi is intended to run with no built-in tools and no project/plugin resource discovery.
 The application owns prompts and supplies bounded retrieved text. Transcript content is
-untrusted evidence, not operational instructions. The Pi setup itself still needs a real
-installed-runtime check. Subprocess timeouts terminate generation; stderr is not returned
+untrusted evidence, not operational instructions. An installed-runtime integration test checks the outgoing request has no tools, the system
+instructions and the correct output budget; real local generations also exercise Pi. Subprocess timeouts terminate generation; stderr is not returned
 to callers. No public user can choose a executable path through the API.
 
 Only explicit cloud selection sends context to Anthropic. Local generation does not silently
@@ -43,4 +45,5 @@ Application logs must not include prompts, transcript bodies or API keys. Requir
 fields are present, with null values when the information does not apply.
 
 Remaining hardening: rate limits, request body limits, bounded concurrent generation,
-authentication/authorization, dependency lockfiles and browser-level adversarial testing.
+authentication/authorization and broader browser-level adversarial testing. Dependency
+versions are constrained by requirements.lock and npm lockfiles.
