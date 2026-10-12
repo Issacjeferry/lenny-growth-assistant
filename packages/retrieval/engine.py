@@ -1,6 +1,7 @@
 """Ollama embeddings and hybrid ranking with a semantic relevance gate."""
 
 import math
+import re
 
 import httpx
 from pydantic import BaseModel
@@ -57,6 +58,15 @@ def fuse(vector_ids: list[str], keyword_ids: list[str]) -> list[str]:
     return sorted(scores, key=lambda key: (-scores[key], key))
 
 
+def mentions_guest(query: str, guest: str) -> bool:
+    """Prefer explicitly named guests, without matching first-name substrings."""
+    words = re.findall(r"\w+", guest.casefold())
+    if len(words) < 2:
+        return False
+    normalized = " " + " ".join(re.findall(r"\w+", query.casefold())) + " "
+    return " " + " ".join(words) + " " in normalized
+
+
 async def retrieve(query: str, db: Session, settings: Settings, limit: int = 5) -> list[Evidence]:
     if not db.scalar(select(func.count()).select_from(Chunk)):
         return []
@@ -85,6 +95,8 @@ async def retrieve(query: str, db: Session, settings: Settings, limit: int = 5) 
         )
     )
     order = fuse(list(eligible), [key for key in keyword_ids if key in eligible])
+    # Stable preference keeps hybrid rank within each group and retains the relevance gate.
+    order.sort(key=lambda key: not mentions_guest(query, eligible[key][1].guest))
     evidence = []
     seen_urls: dict[str, int] = {}
     seen_text = set()

@@ -7,7 +7,7 @@ Do not remove a database volume to fix a connection issue.
 | Symptom | Check / recovery |
 |---|---|
 | GitHub/npm connection resets | Use an allowed network; retry the README install/clone commands |
-| Database password failure on localhost:5432 | This project uses localhost:55432; 5432 may belong to host PostgreSQL |
+| Database password failure on localhost:5432 | This project uses 127.0.0.1:55432; 5432 may belong to host PostgreSQL |
 | Ollama down inside Docker | Set OLLAMA_BASE_URL_DOCKER=http://host.docker.internal:11434; check host Ollama |
 | Health says missing_models | Check ollama list; pull llama3.2:3b and nomic-embed-text, then ollama create lenny-local -f models/Modelfile |
 | Library shows zero episodes | Apply migrations, clone corpus and run ingestion with host DB/Ollama URLs |

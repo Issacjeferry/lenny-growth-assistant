@@ -18,6 +18,9 @@ These files are measurements and review records, not generated sample success cl
 - `corpus-provenance.json`: SHA-256 inventory of the 303 downloaded transcript files.
   The extracted archive did not identify its source commit, so that field is explicitly null.
 - `smoke*.json`, `essay-smoke.json`: earlier failures/partial checks, not full acceptance.
+- `essay-single-pass.json`, `essay-recovery.json`: 12 October 2026 measurements for single-pass
+  essay generation and bounded recovery. Demonstrates graceful retention of cited first draft
+  marked draft_needs_review when length revision misses the word target.
 - `screenshots/`: real browser captures. `artifact-isolation.jpg` is clearly identified
   as a synthetic malicious fixture, not a model-generated artifact.
 

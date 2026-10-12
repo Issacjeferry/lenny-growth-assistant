@@ -1,0 +1,84 @@
+{
+  "status": "partial",
+  "semantic_review_required": true,
+  "config": {
+    "provider": "ollama",
+    "model": "lenny-local",
+    "embed_model": "nomic-embed-text",
+    "max_cosine_distance": 0.35,
+    "available_providers": [
+      "ollama"
+    ],
+    "provider_models": {
+      "ollama": "lenny-local"
+    },
+    "agent_runtime": "Pi Coding Agent"
+  },
+  "library": {
+    "episodes": 276,
+    "chunks": 13120,
+    "embedding_model": "nomic-embed-text",
+    "quarantined_episodes": 70
+  },
+  "summary": {
+    "supported": {
+      "passed": 0,
+      "total": 0
+    },
+    "unsupported": {
+      "passed": 0,
+      "total": 0
+    },
+    "ship30": {
+      "passed": 0,
+      "total": 1
+    },
+    "artifact": {
+      "passed": 0,
+      "total": 0
+    }
+  },
+  "p95_completion_seconds": 290.09,
+  "cases": [
+    {
+      "query": "Write a Ship 30 for 30 essay about finding product market fit.",
+      "session_id": "70de10ae-0a16-4a96-bf44-c2ec7c364678",
+      "kind": "ship30",
+      "passed": false,
+      "error": null,
+      "seconds": 290.09,
+      "status": "draft_needs_review",
+      "words": 457,
+      "answer": "<h1>Finding Product Market Fit: A Framework for Success</h1>\n\n<p>Product-market fit is a crucial aspect of any startup's journey, and yet, it's often shrouded in mystery. Todd Jackson, a partner at First Round Capital, emphasizes the importance of finding product-market fit, stating that it's not just an art, but a science that requires a specific framework to navigate.</p>\n\n<p>According to Rahul Vohra, CEO and founder of Superhuman, finding product-market fit involves creating an algorithm that helps you understand how users would feel if they could no longer use your product. This algorithm, known as the Product Market Fit Engine, asks users three responses: \"How would you feel if you can no longer use this product?\" with one response being \"very disappointed\" (Vohra, [S2]).</p>\n\n<p>Sean Ellis, a well-known growth hacker, has found that companies that struggled to grow had less than 40% of users who were \"very disappointed\" with their product, whereas companies that grew the fastest had more than 40% of users in this category (Ellis, [S3]).</p>\n\n<p>Camille Ricketts, CEO of Notion, emphasizes the importance of understanding your target market and creating a community that aligns with your product's needs. She suggests that companies can leverage customer advisory boards to gather feedback from ideal fit users and build a community around their product (Ricketts, [S3]).</p>\n\n<h2>Deliberately Not Acting on Early User Feedback</h2>\n\n<p>Rahul Vohra stresses the importance of deliberately not acting on early user feedback, instead listening to people intensely and building what people want. This approach allows you to create a product that resonates with your target audience (Vohra, [S2]).</p>\n\n<h2>Building a Community Around Your Product</h2>\n\n<p>Camille Ricketts suggests that companies can build a community around their product by leveraging customer advisory boards and creating a grid that categorizes companies based on their product-market fit (Ricketts, [S3]).</p>\n\n<h2>Understanding Your Target Market</h2>\n\n<p>Todd Jackson emphasizes the importance of understanding your target market and creating a framework that helps you navigate the product-market fit landscape. He suggests that companies should ask themselves questions like \"How would you feel if you can no longer use this product?\" to gain a deeper understanding of their users' needs (Jackson, [S1]).</p>\n\n<h2>Conclusion</h2>\n\n<p>Finding product-market fit is a crucial aspect of any startup's journey. By creating an algorithm that helps you understand your users' needs, deliberately not acting on early user feedback, building a community around your product, and understanding your target market, you can increase your chances of success. Remember, product-market fit is not just an art, but a science that requires a specific framework to navigate.</p>\n\n<p>Takeaway: Ask yourself \"How would you feel if you can no longer use this product?\" to gain a deeper understanding of your users' needs and create a framework that helps you navigate the product-market fit landscape.</p>",
+      "artifact": {
+        "id": "fd94c842-67ee-4e9f-bcc9-7e4062c6348a",
+        "session_id": "70de10ae-0a16-4a96-bf44-c2ec7c364678",
+        "message_id": "7ae41f42-84a6-484e-82e2-bf2794554b7e",
+        "title": "Write a Ship 30 for 30 essay about finding product market fit.",
+        "type": "markdown",
+        "content": "<h1>Finding Product Market Fit: A Framework for Success</h1>\n\n<p>Product-market fit is a crucial aspect of any startup's journey, and yet, it's often shrouded in mystery. Todd Jackson, a partner at First Round Capital, emphasizes the importance of finding product-market fit, stating that it's not just an art, but a science that requires a specific framework to navigate.</p>\n\n<p>According to Rahul Vohra, CEO and founder of Superhuman, finding product-market fit involves creating an algorithm that helps you understand how users would feel if they could no longer use your product. This algorithm, known as the Product Market Fit Engine, asks users three responses: \"How would you feel if you can no longer use this product?\" with one response being \"very disappointed\" (Vohra, [S2]).</p>\n\n<p>Sean Ellis, a well-known growth hacker, has found that companies that struggled to grow had less than 40% of users who were \"very disappointed\" with their product, whereas companies that grew the fastest had more than 40% of users in this category (Ellis, [S3]).</p>\n\n<p>Camille Ricketts, CEO of Notion, emphasizes the importance of understanding your target market and creating a community that aligns with your product's needs. She suggests that companies can leverage customer advisory boards to gather feedback from ideal fit users and build a community around their product (Ricketts, [S3]).</p>\n\n<h2>Deliberately Not Acting on Early User Feedback</h2>\n\n<p>Rahul Vohra stresses the importance of deliberately not acting on early user feedback, instead listening to people intensely and building what people want. This approach allows you to create a product that resonates with your target audience (Vohra, [S2]).</p>\n\n<h2>Building a Community Around Your Product</h2>\n\n<p>Camille Ricketts suggests that companies can build a community around their product by leveraging customer advisory boards and creating a grid that categorizes companies based on their product-market fit (Ricketts, [S3]).</p>\n\n<h2>Understanding Your Target Market</h2>\n\n<p>Todd Jackson emphasizes the importance of understanding your target market and creating a framework that helps you navigate the product-market fit landscape. He suggests that companies should ask themselves questions like \"How would you feel if you can no longer use this product?\" to gain a deeper understanding of their users' needs (Jackson, [S1]).</p>\n\n<h2>Conclusion</h2>\n\n<p>Finding product-market fit is a crucial aspect of any startup's journey. By creating an algorithm that helps you understand your users' needs, deliberately not acting on early user feedback, building a community around your product, and understanding your target market, you can increase your chances of success. Remember, product-market fit is not just an art, but a science that requires a specific framework to navigate.</p>\n\n<p>Takeaway: Ask yourself \"How would you feel if you can no longer use this product?\" to gain a deeper understanding of your users' needs and create a framework that helps you navigate the product-market fit landscape.</p>",
+        "created_at": "2026-10-12T04:59:45.342313Z"
+      },
+      "citations": [
+        {
+          "id": "ad429c15-45d3-49fb-a02a-6cdfffdb28f0",
+          "label": "S2",
+          "title": "Superhuman's secret to success | Rahul Vohra (CEO and founder)",
+          "url": "https://www.youtube.com/watch?v=0igjSRZyX-w&t=3192s"
+        },
+        {
+          "id": "fe1e17c4-3b1f-40ee-bdd0-d49c73b312f7",
+          "label": "S3",
+          "title": "How Notion leveraged community to build a $10B business | Camille Ricketts",
+          "url": "https://www.youtube.com/watch?v=bY5KC9Gguz8&t=2014s"
+        },
+        {
+          "id": "3d991ef3-45b8-47cf-aeae-84874ffc45b3",
+          "label": "S1",
+          "title": "A framework for finding product-market fit | Todd Jackson (First Round Capital)",
+          "url": "https://www.youtube.com/watch?v=yc1Uwhfxacs&t=373s"
+        }
+      ]
+    }
+  ]
+}

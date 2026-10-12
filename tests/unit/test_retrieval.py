@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock
 import httpx
 import pytest
 
-from packages.retrieval.engine import embed, fuse
+from packages.retrieval.engine import embed, fuse, mentions_guest
 from packages.retrieval.transcripts import conflicting_sources, parse_transcript
 from packages.shared.config import Settings
 from packages.shared.errors import ProviderUnavailableError
@@ -41,6 +41,14 @@ def test_parser_rejects_missing_provenance(tmp_path):
 
 def test_rrf_promotes_agreement_without_counting_duplicates():
     assert fuse(["a", "b", "c"], ["b", "b", "c"]) == ["b", "c", "a"]
+
+
+def test_named_guest_matches_full_name_and_respects_word_boundaries():
+    assert mentions_guest("What does BOB MOESTA say?", "Bob Moesta")
+    assert mentions_guest("Compare Bob Moesta's and Ryan Singer's advice", "Ryan Singer")
+    assert not mentions_guest("Ask Bob Moestaph", "Bob Moesta")
+    assert not mentions_guest("Ask Bob", "Bob Moesta")
+    assert not mentions_guest("What did Lenny say?", "Lenny")
 
 
 @pytest.mark.asyncio

@@ -92,6 +92,20 @@ async def test_model_timeout_kills_process(monkeypatch):
     process.kill.assert_called_once()
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize("output", [b"[]", b"null", b'{"text": ""}', b"not-json"])
+async def test_malformed_runtime_output_returns_structured_error(monkeypatch, output):
+    import asyncio
+    from unittest.mock import MagicMock
+
+    process = MagicMock(returncode=0)
+    process.communicate = AsyncMock(return_value=(output, b""))
+    monkeypatch.setattr(asyncio, "create_subprocess_exec", AsyncMock(return_value=process))
+    with pytest.raises(ProviderUnavailableError) as exc:
+        await generate("system", "prompt", "ollama", Settings(_env_file=None))
+    assert exc.value.error_code == "GENERATION_FAILED"
+
+
 def test_normalizes_only_explicit_citation_markers():
     from packages.agent.grounding import normalize_citations
 

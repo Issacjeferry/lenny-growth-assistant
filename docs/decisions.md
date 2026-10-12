@@ -45,3 +45,13 @@
 14. The standard multi-stage image now builds successfully with npm lockfile installs.
     Copy the completed frontend stage before installing agent dependencies so these installs
     are ordered. This success does not establish the precise cause of the earlier npm failure.
+
+## 2026-10-12 — Bounded generation recovery
+
+15. Replace six essay turns with one full draft (3,000-token budget). Both six-turn live
+    cases timed out. One optional revision receives the actual draft and the remaining
+    deadline; failures or worse word counts cannot discard the cited first draft.
+16. Prefer explicit full guest names within already-eligible retrieved candidates. Do not
+    lower the distance threshold or equate a name match with evidence of claim support.
+17. Use IPv4 loopback in host setup: a local `localhost` database connection stalled,
+    while `127.0.0.1` connected successfully. Docker retains its service-name addressing.

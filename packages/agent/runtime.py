@@ -16,7 +16,6 @@ async def generate(
     provider: str,
     settings: Settings,
     max_tokens: int = 900,
-    essay: bool = False,
 ) -> str:
     if provider not in ("ollama", "anthropic"):
         raise ProviderUnavailableError(
@@ -37,7 +36,6 @@ async def generate(
             "baseUrl": settings.OLLAMA_BASE_URL.rstrip("/") + "/v1",
             "apiKey": settings.ANTHROPIC_API_KEY if provider == "anthropic" else "ollama",
             "maxTokens": max_tokens,
-            "essay": essay,
         }
     ).encode()
     try:
@@ -67,6 +65,7 @@ async def generate(
         result = json.loads(stdout)
         if (
             process.returncode
+            or not isinstance(result, dict)
             or not isinstance(result.get("text"), str)
             or not result["text"].strip()
         ):

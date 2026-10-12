@@ -49,34 +49,10 @@ try {
     }),
   }));
   if (session.getActiveToolNames().length) throw new Error('Unexpected active tools');
-  const sections = [];
-  const turns = request.essay ? 6 : 1;
-  for (let i = 0; i < turns; i++) {
-    const written = sections.join(' ').trim().split(/\s+/).filter(Boolean).length;
-    const target = Math.max(90, Math.min(350, Math.round((1250 - written) / (turns - i))));
-    const task = i === 0
-      ? 'Write the headline, hook and first substantive section. Do not conclude yet.'
-      : i === turns - 1
-        ? 'Write the final section with a concrete proposed exercise and a decisive takeaway.'
-        : 'Write the next section with a descriptive Markdown heading and a distinct argument. Do not conclude yet.';
-    const prompt = request.essay
-      ? (i === 0 ? request.prompt + '\n\n' : '') +
-        `SECTION ${i + 1} OF 6: ${task} Write about ${target} words for THIS section. ` +
-        'Use only the transcript evidence already supplied, with explicit [S1] style citations. ' +
-        'Do not repeat previous paragraphs, introduce unsupported facts, or transfer advice between guests. ' +
-        'Label proposed applications as suggestions. Return only this section, no commentary.'
-      : request.prompt;
-    await session.prompt(prompt);
-    const last = session.messages.at(-1);
-    if (last?.stopReason === 'error' || last?.stopReason === 'aborted') throw new Error('Model failed');
-    const text = session.getLastAssistantText();
-    if (text?.includes('INSUFFICIENT_EVIDENCE')) {
-      sections.splice(0, sections.length, 'INSUFFICIENT_EVIDENCE');
-      break;
-    }
-    sections.push(text);
-  }
-  process.stdout.write(JSON.stringify({text: sections.join('\n\n')}));
+  await session.prompt(request.prompt);
+  const last = session.messages.at(-1);
+  if (last?.stopReason === 'error' || last?.stopReason === 'aborted') throw new Error('Model failed');
+  process.stdout.write(JSON.stringify({text: session.getLastAssistantText()}));
 } catch {
   process.stdout.write(JSON.stringify({error: 'GENERATION_FAILED'}));
   process.exitCode = 1;

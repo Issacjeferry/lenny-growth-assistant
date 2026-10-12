@@ -27,6 +27,7 @@ flowchart LR
    user question. Embed the query using nomic-embed-text (768 dimensions).
 3. Retrieve nearest passages from eligible episodes. Apply the cosine-distance cutoff
    (default 0.35), then reciprocal rank fusion with PostgreSQL full-text ranks (k=60).
+   Prefer a fully named guest within eligible results while preserving hybrid rank within groups.
    Supply three complete passages, with at most two from one episode URL and no exact text duplicates.
 4. Without evidence, return an explicit refusal. Embedding outages return a service error.
 5. Choose Q&A, Ship 30, HTML or Markdown instructions. Supply bounded history and source
@@ -34,6 +35,8 @@ flowchart LR
    plugins, disk sessions or persisted credentials. A subprocess timeout kills generation.
 6. Reject responses without valid citation IDs, or with invented IDs. This is a structural
    citation check, not proof that every claim is entailed. Semantic review remains necessary.
+   Ship 30 uses one complete draft and at most one bounded length revision. A failed or
+   worse revision keeps the cited draft with a visible review status.
 7. Persist user and assistant messages and any artifact in one transaction. A failure rolls
    back the turn. Return the completed response atomically; SSE is not implemented.
 

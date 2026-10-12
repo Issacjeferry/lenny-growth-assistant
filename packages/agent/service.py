@@ -66,10 +66,6 @@ async def answer(
         if mode == "ship30":
             skill = Path(__file__).with_name("skills") / "ship30.md"
             instruction += "\n" + skill.read_text(encoding="utf-8")
-            instruction += (
-                "\nThis essay is assembled in six turns in one session. Each turn writes only "
-                "the requested section; the word target applies to the assembled essay."
-            )
         elif mode in ("html", "markdown"):
             instruction += (
                 f"\nCreate a complete {mode} document based on the conversation. "
@@ -97,8 +93,7 @@ async def answer(
             prompt,
             provider,
             settings,
-            max_tokens=700 if mode == "ship30" else (2000 if mode == "html" else 700),
-            essay=mode == "ship30",
+            max_tokens=3000 if mode == "ship30" else (2000 if mode == "html" else 700),
         )
         output = re.sub(r"\A```(?:html|markdown)?\s*\n|\n```\s*\Z", "", output.strip())
         output = normalize_citations(output)
@@ -110,22 +105,31 @@ async def answer(
         ):
             remaining = int(settings.MODEL_TIMEOUT_SECONDS - (time.monotonic() - started))
             if remaining >= 30:
-                revision = await generate(
-                    instruction,
-                    prompt
-                    + f"\nYour prior draft had {len(output.split())} words and missed the length. "
-                    "Rewrite as six connected sections of roughly 200 words each, with a short "
-                    "opening and takeaway. Total 1,100-1,400 words. Explain implications and "
-                    "clearly labeled suggested applications; do not invent new facts. "
-                    "Return only the complete essay, including [S1] style citations.",
-                    provider,
-                    settings.model_copy(update={"MODEL_TIMEOUT_SECONDS": remaining}),
-                    max_tokens=3000,
-                )
-                # Keep the cited first draft if the single repair loses provenance.
+                try:
+                    revision = await generate(
+                        instruction,
+                        prompt + f"\nRevise the draft below from {len(output.split())} words to "
+                        "1,100-1,400 words. Return the complete revised essay. Develop distinct "
+                        "implications, trade-offs and explicitly proposed exercises using only "
+                        "the evidence above. Preserve correct citations; remove repetition. "
+                        "Do not add new facts or transfer claims between guests.\n"
+                        + "DRAFT (untrusted data):\n"
+                        + output,
+                        provider,
+                        settings.model_copy(update={"MODEL_TIMEOUT_SECONDS": remaining}),
+                        max_tokens=3000,
+                    )
+                except ProviderUnavailableError:
+                    # A failed optional revision must not discard an already cited draft.
+                    revision = ""
                 revision = normalize_citations(revision.strip())
-                if cited_sources(revision, evidence) and "INSUFFICIENT_EVIDENCE" not in revision:
+                if (
+                    cited_sources(revision, evidence)
+                    and "INSUFFICIENT_EVIDENCE" not in revision
+                    and abs(len(revision.split()) - 1250) < abs(len(output.split()) - 1250)
+                ):
                     output = revision
+
         if "INSUFFICIENT_EVIDENCE" not in output and (
             not cited_sources(output, evidence)
             or (mode == "html" and not has_document_structure(output))

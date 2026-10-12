@@ -151,6 +151,26 @@ def test_ship30_keeps_review_status_if_repair_still_short(client, monkeypatch):
     assert generator.await_count == 2
 
 
+@pytest.mark.parametrize("revision", ["Worse [S1]", ProviderUnavailableError()])
+def test_ship30_preserves_cited_draft_when_revision_fails_or_degrades(
+    client, monkeypatch, revision
+):
+    api, _ = client
+    draft = "A draft with useful source-backed advice [S1]"
+    generator = AsyncMock(side_effect=[draft, revision])
+    monkeypatch.setattr(service, "generate", generator)
+    session = api.post("/api/sessions", json={}).json()["id"]
+    response = api.post(
+        f"/api/sessions/{session}/messages", json={"content": "Retention", "mode": "ship30"}
+    )
+    assert response.status_code == 200
+    result = response.json()
+    assert result["message"]["content"] == draft
+    assert result["message"]["status"] == "draft_needs_review"
+    assert result["artifact"]["content"] == draft
+    assert draft in generator.call_args.args[1]
+
+
 def test_followup_retrieves_with_own_prior_question_and_no_other_chat_history(client, monkeypatch):
     api, _ = client
     search = AsyncMock(return_value=[evidence()])

@@ -26,8 +26,8 @@ ollama pull nomic-embed-text
 ollama pull llama3.2:3b
 ollama create lenny-local -f models/Modelfile
 docker compose up -d db
-$env:DATABASE_URL = 'postgresql+psycopg://postgres:postgres@localhost:55432/lenny'
-$env:OLLAMA_BASE_URL = 'http://localhost:11434'
+$env:DATABASE_URL = 'postgresql+psycopg://postgres:postgres@127.0.0.1:55432/lenny'
+$env:OLLAMA_BASE_URL = 'http://127.0.0.1:11434'
 python -m alembic upgrade head
 python -m packages.retrieval.ingest --limit 10
 python -m packages.retrieval.audit
@@ -73,8 +73,8 @@ installs from lockfiles and does not require these prebuilt files.
 
 | Variable | Purpose |
 |---|---|
-| DATABASE_URL | Container: db:5432; host: localhost:55432 |
-| OLLAMA_BASE_URL | Host Python connection, normally http://localhost:11434 |
+| DATABASE_URL | Container: db:5432; host: 127.0.0.1:55432 |
+| OLLAMA_BASE_URL | Host Python connection, normally http://127.0.0.1:11434 |
 | OLLAMA_BASE_URL_DOCKER | Container connection, normally http://host.docker.internal:11434 |
 | OLLAMA_MODEL | Default lenny-local: llama3.2:3b with a 12,288-token context |
 | OLLAMA_EMBED_MODEL | nomic-embed-text; schema requires 768 dimensions |
