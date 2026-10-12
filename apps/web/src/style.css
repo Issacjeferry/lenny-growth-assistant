@@ -1169,27 +1169,75 @@ a:hover { text-decoration: underline; }
   gap: 10px;
 }
 .control-sep {
-  height: 14px;
-  border-left: 1px solid #dbdfd2;
+  height: 18px;
+  border-left: 1px solid #d8decb;
 }
 
-.mode-pill-select, .provider-pill-select {
+.custom-select-wrap {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: #f4f5ee;
-  border: 1px solid #d9ddd0;
+  background: #f7f9f2;
+  border: 1px solid #ced6c4;
   border-radius: var(--radius-sm);
-  padding: 4px 8px;
+  padding: 0 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(21, 53, 46, 0.04);
 }
-.control-icon { font-size: 13px; color: var(--accent-sage); }
-.mode-pill-select select, .provider-pill-select select {
+.custom-select-wrap:hover {
+  background: #eff3e7;
+  border-color: #a4b693;
+  box-shadow: 0 2px 6px rgba(21, 53, 46, 0.08);
+}
+.custom-select-wrap:focus-within {
+  border-color: var(--accent-sage);
+  background: #ffffff;
+  box-shadow: 0 0 0 2px rgba(110, 136, 93, 0.2);
+}
+
+.select-icon {
+  font-size: 13px;
+  color: var(--accent-sage);
+  margin-right: 6px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.provider-select-wrap .select-icon {
+  color: #ca613e;
+  font-weight: 700;
+}
+
+.styled-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   border: 0;
   background: transparent;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-body);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-dark);
+  padding: 6px 18px 6px 0;
   outline: none;
+  cursor: pointer;
+  line-height: 1.4;
+}
+.styled-select option {
+  background: #ffffff;
+  color: #1b3830;
+  font-weight: 500;
+  padding: 8px;
+}
+
+.select-chevron {
+  position: absolute;
+  right: 7px;
+  font-size: 10px;
+  color: #7b8e83;
+  pointer-events: none;
+  transition: transform 0.15s ease;
+}
+.custom-select-wrap:hover .select-chevron {
+  color: var(--text-dark);
 }
 
 .send-wrapper {

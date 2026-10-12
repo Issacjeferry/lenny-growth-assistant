@@ -11,19 +11,22 @@ router = APIRouter(tags=["config"])
 async def get_config(
     settings: Settings = Depends(get_settings_dep),
 ) -> ConfigResponse:
+    providers = ["ollama", "gemini"]
+    if settings.ANTHROPIC_API_KEY and settings.ANTHROPIC_MODEL:
+        providers.append("anthropic")
     return ConfigResponse(
         provider=settings.LLM_PROVIDER.value,
         model=settings.selected_model(),
         embed_model=settings.OLLAMA_EMBED_MODEL,
         max_cosine_distance=settings.MAX_COSINE_DISTANCE,
-        available_providers=["ollama"]
-        + (["gemini"] if settings.GEMINI_API_KEY else [])
-        + (["anthropic"] if settings.ANTHROPIC_API_KEY and settings.ANTHROPIC_MODEL else []),
-        provider_models={"ollama": settings.OLLAMA_MODEL}
-        | ({"gemini": settings.GEMINI_MODEL} if settings.GEMINI_API_KEY else {})
-        | (
-            {"anthropic": settings.ANTHROPIC_MODEL}
-            if settings.ANTHROPIC_API_KEY and settings.ANTHROPIC_MODEL
-            else {}
-        ),
+        available_providers=providers,
+        provider_models={
+            "ollama": settings.OLLAMA_MODEL,
+            "gemini": settings.GEMINI_MODEL,
+            **(
+                {"anthropic": settings.ANTHROPIC_MODEL}
+                if settings.ANTHROPIC_API_KEY and settings.ANTHROPIC_MODEL
+                else {}
+            ),
+        },
     )

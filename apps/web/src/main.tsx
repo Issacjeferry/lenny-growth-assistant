@@ -677,25 +677,27 @@ function App() {
             <div className="composer-controls">
               <div className="controls-group">
                 {/* MODE SELECTOR */}
-                <div className="mode-pill-select">
-                  <span className="control-icon">{modes.find(m => m.id === mode)?.icon}</span>
+                <div className="custom-select-wrap mode-select-wrap" title="Select Output Format">
+                  <span className="select-icon">{modes.find(m => m.id === mode)?.icon}</span>
                   <select
                     aria-label="Output Mode"
                     value={mode}
                     onChange={e => setMode(e.target.value as Mode)}
                     disabled={busy}
+                    className="styled-select"
                   >
                     {modes.map(m => (
-                      <option key={m.id} value={m.id}>{m.name} ({m.badge})</option>
+                      <option key={m.id} value={m.id}>{m.name} · {m.badge}</option>
                     ))}
                   </select>
+                  <span className="select-chevron">▾</span>
                 </div>
 
                 <span className="control-sep"/>
 
                 {/* PROVIDER / ENGINE SELECTOR */}
-                <div className="provider-pill-select">
-                  <span className="control-icon">⚙️</span>
+                <div className="custom-select-wrap provider-select-wrap" title="Select LLM Engine">
+                  <span className="select-icon">{provider === 'gemini' ? '⚡' : '●'}</span>
                   <select
                     aria-label="Model Provider"
                     value={provider}
@@ -704,6 +706,7 @@ function App() {
                       setModel(providerModels[e.target.value] || '');
                     }}
                     disabled={busy}
+                    className="styled-select"
                   >
                     {providers.map(p => (
                       <option key={p} value={p}>
@@ -711,6 +714,7 @@ function App() {
                       </option>
                     ))}
                   </select>
+                  <span className="select-chevron">▾</span>
                 </div>
               </div>
 
