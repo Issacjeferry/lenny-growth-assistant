@@ -17,8 +17,10 @@ async def get_config(
         embed_model=settings.OLLAMA_EMBED_MODEL,
         max_cosine_distance=settings.MAX_COSINE_DISTANCE,
         available_providers=["ollama"]
+        + (["gemini"] if settings.GEMINI_API_KEY else [])
         + (["anthropic"] if settings.ANTHROPIC_API_KEY and settings.ANTHROPIC_MODEL else []),
         provider_models={"ollama": settings.OLLAMA_MODEL}
+        | ({"gemini": settings.GEMINI_MODEL} if settings.GEMINI_API_KEY else {})
         | (
             {"anthropic": settings.ANTHROPIC_MODEL}
             if settings.ANTHROPIC_API_KEY and settings.ANTHROPIC_MODEL

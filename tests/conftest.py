@@ -11,6 +11,8 @@ def isolate_configuration(monkeypatch):
     monkeypatch.setenv("MAX_COSINE_DISTANCE", "0.35")
     monkeypatch.setenv("ANTHROPIC_API_KEY", "")
     monkeypatch.setenv("OPENAI_API_KEY", "")
+    monkeypatch.setenv("GEMINI_API_KEY", "")
+    monkeypatch.setenv("GEMINI_MODEL", "")
     get_settings.cache_clear()
     yield
     get_settings.cache_clear()

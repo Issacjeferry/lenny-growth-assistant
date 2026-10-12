@@ -76,6 +76,9 @@ async def test_cloud_requires_explicit_model_and_key():
     with pytest.raises(ProviderUnavailableError) as exc:
         await generate("system", "prompt", "anthropic", Settings(_env_file=None))
     assert exc.value.error_code == "PROVIDER_NOT_CONFIGURED"
+    with pytest.raises(ProviderUnavailableError) as exc:
+        await generate("system", "prompt", "gemini", Settings(_env_file=None))
+    assert exc.value.error_code == "PROVIDER_NOT_CONFIGURED"
 
 
 @pytest.mark.asyncio

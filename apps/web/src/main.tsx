@@ -707,7 +707,7 @@ function App() {
                   >
                     {providers.map(p => (
                       <option key={p} value={p}>
-                        {p === 'ollama' ? 'Local Ollama (lenny-local)' : 'Anthropic Claude (Cloud)'}
+                        {p === 'ollama' ? 'Local Ollama (lenny-local)' : p === 'gemini' ? '⚡ Google Gemini (Cloud · 2s)' : 'Anthropic Claude (Cloud)'}
                       </option>
                     ))}
                   </select>

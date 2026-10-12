@@ -13,14 +13,23 @@ const directory = await mkdtemp(join(tmpdir(), 'lenny-agent-'));
 let session;
 try {
   const local = request.provider === 'ollama';
+  const isGemini = request.provider === 'gemini';
+  const baseUrl = local
+    ? request.baseUrl
+    : (isGemini ? 'https://generativelanguage.googleapis.com/v1beta/openai' : 'https://api.anthropic.com');
+  const apiFormat = (local || isGemini) ? 'openai-completions' : 'anthropic-messages';
   await writeFile(join(directory, 'models.json'), JSON.stringify({providers: {
     [request.provider]: {
-      baseUrl: local ? request.baseUrl : 'https://api.anthropic.com',
-      api: local ? 'openai-completions' : 'anthropic-messages',
-      models: [{id: request.model, contextWindow: local ? 12288 : 200000,
-        maxTokens: request.maxTokens || 900, samplingParams: {temperature: 0.2},
-        ...(local ? {compat: {maxTokensField: 'max_tokens', supportsStore: false,
-          supportsDeveloperRole: false, supportsReasoningEffort: false}} : {})}],
+      baseUrl,
+      api: apiFormat,
+      models: [{
+        id: request.model,
+        contextWindow: local ? 8192 : 200000,
+        maxTokens: request.maxTokens || 900,
+        samplingParams: {temperature: 0.2},
+        ...((local || isGemini) ? {compat: {maxTokensField: 'max_tokens', supportsStore: false,
+          supportsDeveloperRole: false, supportsReasoningEffort: false}} : {})
+      }],
     },
   }}));
   const runtime = await ModelRuntime.create({

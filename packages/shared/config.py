@@ -10,6 +10,7 @@ class LLMProviderType(str, Enum):
     OLLAMA = "ollama"
     ANTHROPIC = "anthropic"
     OPENAI = "openai"
+    GEMINI = "gemini"
 
 
 class Settings(BaseSettings):
@@ -28,6 +29,8 @@ class Settings(BaseSettings):
     ANTHROPIC_MODEL: str = ""
     OPENAI_API_KEY: Optional[str] = None
     OPENAI_MODEL: str = ""
+    GEMINI_API_KEY: Optional[str] = None
+    GEMINI_MODEL: str = "gemini-2.5-flash"
     MODEL_TIMEOUT_SECONDS: int = Field(default=900, ge=1, le=900)
     NODE_BINARY: str = "node"
     LOG_LEVEL: str = "INFO"
@@ -39,6 +42,7 @@ class Settings(BaseSettings):
             "ollama": self.OLLAMA_MODEL,
             "anthropic": self.ANTHROPIC_MODEL,
             "openai": self.OPENAI_MODEL,
+            "gemini": self.GEMINI_MODEL,
         }[choice]
 
 
