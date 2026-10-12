@@ -58,12 +58,23 @@ try {
     }),
   }));
   if (session.getActiveToolNames().length) throw new Error('Unexpected active tools');
-  await session.prompt(request.prompt);
-  const last = session.messages.at(-1);
-  if (last?.stopReason === 'error' || last?.stopReason === 'aborted') throw new Error('Model failed');
+  let last;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await session.prompt(request.prompt);
+    last = session.messages.at(-1);
+    if (last?.stopReason !== 'error' && last?.stopReason !== 'aborted') break;
+    const msg = last?.errorMessage || '';
+    if ((msg.includes('503') || msg.includes('demand') || msg.includes('429')) && attempt < 2) {
+      await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
+      continue;
+    }
+    break;
+  }
+  if (last?.stopReason === 'error' || last?.stopReason === 'aborted') throw new Error('Model failed: ' + (last?.errorMessage || JSON.stringify(last)));
   process.stdout.write(JSON.stringify({text: session.getLastAssistantText()}));
-} catch {
-  process.stdout.write(JSON.stringify({error: 'GENERATION_FAILED'}));
+} catch (err) {
+  console.error('BRIDGE ERROR:', err);
+  process.stdout.write(JSON.stringify({error: 'GENERATION_FAILED', detail: String(err)}));
   process.exitCode = 1;
 } finally {
   session?.dispose();

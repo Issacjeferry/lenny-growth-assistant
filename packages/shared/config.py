@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: Optional[str] = None
     OPENAI_MODEL: str = ""
     GEMINI_API_KEY: Optional[str] = None
-    GEMINI_MODEL: str = "gemini-2.5-flash"
+    GEMINI_MODEL: str = "gemini-flash-lite-latest"
     MODEL_TIMEOUT_SECONDS: int = Field(default=900, ge=1, le=900)
     NODE_BINARY: str = "node"
     LOG_LEVEL: str = "INFO"

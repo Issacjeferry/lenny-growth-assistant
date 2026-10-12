@@ -25,7 +25,7 @@ class ChatRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
     content: str = Field(min_length=1, max_length=6000)
     mode: Literal["qa", "ship30", "html", "markdown"] = "qa"
-    provider: Literal["ollama", "anthropic"] | None = None
+    provider: Literal["ollama", "anthropic", "gemini"] | None = None
 
 
 class MessageView(BaseModel):
